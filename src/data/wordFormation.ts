@@ -1,0 +1,369 @@
+import type { GapQuestion } from './types';
+
+export interface WordFamilyEntry {
+  id: string;
+  tag: 'Unit 4 · KOLOS' | 'Unit 5' | 'Units 1–3' | 'AGH B2';
+  root: string;
+  verb: string;
+  noun: string;
+  adjective: string;
+  adverb?: string;
+  pl: string;
+  trap?: string;
+}
+
+export const SUFFIX_CHEATSHEET = [
+  {
+    pos: 'Rzeczownik (Noun)',
+    when: 'Po przedimkach (a / an / the), zaimkach (our / its / this), przyimkach (of / to / for) lub po przymiotniku (strong ___)',
+    suffixes: [
+      '-tion / -sion: acquisition, expansion, innovation, distribution, competition',
+      '-ment: development, management, employment, investment, requirement',
+      '-ance / -ence: performance, importance, competence, efficiency (-cy)',
+      '-ity / -cy: volatility, transparency, profitability, flexibility',
+      '-ship: leadership, partnership, internship, relationship',
+      '-ure / -th: failure, growth',
+      'Osoby (-er / -or / -ian / -ee): employer, employee, manufacturer, operator, logistician',
+    ],
+  },
+  {
+    pos: 'Przymiotnik (Adjective)',
+    when: 'Przed rzeczownikiem (___ prices), po "be / become / seem" lub po przysłówku (totally ___ / highly ___)',
+    suffixes: [
+      '-ive: innovative, competitive, comprehensive, decisive, productive',
+      '-able / -ible: profitable, doable, reliable, recognisable, sustainable',
+      '-ful / -less: successful, helpful, driverless',
+      '-y: risky, wealthy, healthy',
+      '-al / -ic: political, economic, technological, financial, analytical',
+      '-ous: continuous, cautious, ambitious',
+    ],
+  },
+  {
+    pos: 'Czasownik (Verb)',
+    when: 'Po podmiocie (companies ___), po "to" (aims to ___) lub po czasowniku modalnym (must / should / can ___)',
+    suffixes: [
+      '-ise / -ize: prioritise, optimise, specialise, realise',
+      '-ate: differentiate, innovate, motivate, negotiate',
+      'en- (przedrostek): enable, enhance, encourage, ensure',
+      '-ify: clarify, simplify, justify',
+      're- (ponownie): restructure, redesign, reconsider, relocate',
+    ],
+  },
+  {
+    pos: 'Przeczenia i Przysłówki (Negatives & Adverbs)',
+    when: 'Przysłówek (-ly) opisuje czasownik (work ___) lub przymiotnik (___ lower). Przeczenie często wynika z sensu zdania!',
+    suffixes: [
+      '-ly (przysłówek): significantly, considerably, properly, efficiently, previously',
+      'un-: unsuccessful, unhelpful, unreliable, unwilling, unforeseen',
+      'in- / im- / ir-: incompetent, inefficient, inexpensive, irregular',
+      'dis-: dissatisfied, disagree, disadvantage, disappear',
+      'mis-: misunderstand, mismanage, misleading',
+    ],
+  },
+];
+
+export const ALL_WORD_FAMILIES: WordFamilyEntry[] = [
+  // UNIT 4 (13 core families)
+  { id: 'wf-u4-1', tag: 'Unit 4 · KOLOS', root: 'ACQUIRE', verb: 'acquire', noun: 'acquisition', adjective: '-', pl: 'przejąć / przejęcie', trap: 'Pisownia: ac-qui-si-tion' },
+  { id: 'wf-u4-2', tag: 'Unit 4 · KOLOS', root: 'COMPETE', verb: 'compete', noun: 'competition, competitor', adjective: 'competing, competitive', adverb: 'competitively', pl: 'konkurować / konkurencja / konkurencyjny' },
+  { id: 'wf-u4-3', tag: 'Unit 4 · KOLOS', root: 'DEVELOP', verb: 'develop', noun: 'development, developer', adjective: 'developing, developed', pl: 'rozwijać / rozwój', trap: 'development = rozwój; developer = osoba/firma' },
+  { id: 'wf-u4-4', tag: 'Unit 4 · KOLOS', root: 'EXPAND', verb: 'expand', noun: 'expansion', adjective: 'expanding, expansive, expanded', pl: 'rozszerzać / ekspansja' },
+  { id: 'wf-u4-5', tag: 'Unit 4 · KOLOS', root: 'FAIL', verb: 'fail', noun: 'failure', adjective: 'failing', pl: 'ponieść porażkę / porażka' },
+  { id: 'wf-u4-6', tag: 'Unit 4 · KOLOS', root: 'GROW', verb: 'grow', noun: 'growth', adjective: 'growing', pl: 'rosnąć / wzrost', trap: 'growth (z "w" przed "th")' },
+  { id: 'wf-u4-7', tag: 'Unit 4 · KOLOS', root: 'INNOVATE', verb: 'innovate', noun: 'innovation, innovator', adjective: 'innovative', pl: 'wprowadzać innowacje / innowacyjny', trap: 'Przymiotnik: innovative (nie innovating!)' },
+  { id: 'wf-u4-8', tag: 'Unit 4 · KOLOS', root: 'MERGE', verb: 'merge', noun: 'merger', adjective: 'merged', pl: 'połączyć się / fuzja' },
+  { id: 'wf-u4-9', tag: 'Unit 4 · KOLOS', root: 'PERFORM', verb: 'perform', noun: 'performance, performer', adjective: '-', pl: 'osiągać wyniki / wyniki, wydajność', trap: 'Rzeczownik: performance (nie performing!)' },
+  { id: 'wf-u4-10', tag: 'Unit 4 · KOLOS', root: 'PROFIT', verb: 'profit', noun: 'profit, profitability', adjective: 'profitable, unprofitable', adverb: 'profitably', pl: 'zysk / rentowny' },
+  { id: 'wf-u4-11', tag: 'Unit 4 · KOLOS', root: 'RISK', verb: 'risk', noun: 'risk', adjective: 'risky', pl: 'ryzykować / ryzykowny', trap: 'Przymiotnik: risky (nie riskable!)' },
+  { id: 'wf-u4-12', tag: 'Unit 4 · KOLOS', root: 'SUCCEED', verb: 'succeed', noun: 'success', adjective: 'successful, unsuccessful', adverb: 'successfully', pl: 'odnieść sukces / sukces / udany', trap: 'successful (jedno "l" na końcu!)' },
+  { id: 'wf-u4-13', tag: 'Unit 4 · KOLOS', root: 'TAKE OVER', verb: 'take over (took over)', noun: 'takeover', adjective: '-', pl: 'przejąć firmę / przejęcie', trap: 'Czasownik rozdzielnie, rzeczownik łącznie!' },
+
+  // UNIT 5 (Logistics Word Building)
+  { id: 'wf-u5-1', tag: 'Unit 5', root: 'DELIVER', verb: 'deliver', noun: 'delivery', adjective: '-', pl: 'dostarczać / dostawa' },
+  { id: 'wf-u5-2', tag: 'Unit 5', root: 'DISTRIBUTE', verb: 'distribute', noun: 'distribution, distributor', adjective: '-', pl: 'rozprowadzać / dystrybucja' },
+  { id: 'wf-u5-3', tag: 'Unit 5', root: 'LOGISTICS', verb: '-', noun: 'logistics, logistician', adjective: 'logistical', pl: 'logistyka / logistyk (osoba!)', trap: 'Osoba to logistician!' },
+  { id: 'wf-u5-4', tag: 'Unit 5', root: 'MANUFACTURE', verb: 'manufacture', noun: 'manufacturing, manufacturer', adjective: '-', pl: 'produkować / produkcja / producent' },
+  { id: 'wf-u5-5', tag: 'Unit 5', root: 'OPERATE', verb: 'operate', noun: 'operation, operator', adjective: 'operational', pl: 'obsługiwać / operacja / operator' },
+  { id: 'wf-u5-6', tag: 'Unit 5', root: 'PACK', verb: 'pack', noun: 'packaging, package, parcel', adjective: 'packed', pl: 'pakować / opakowanie / paczka' },
+
+  // UNITS 1–3 & AGH B2 EXAM REGULARS
+  { id: 'wf-agh-1', tag: 'AGH B2', root: 'VOLATILE', verb: '-', noun: 'volatility', adjective: 'volatile', pl: 'zmienny / zmienność (np. cen akcji)' },
+  { id: 'wf-agh-2', tag: 'AGH B2', root: 'TRANSPARENT', verb: '-', noun: 'transparency', adjective: 'transparent', adverb: 'transparently', pl: 'przejrzysty / przejrzystość' },
+  { id: 'wf-agh-3', tag: 'AGH B2', root: 'STRUCTURE', verb: 'structure, restructure', noun: 'structure, restructuring', adjective: 'structural', pl: 'struktura / restrukturyzacja' },
+  { id: 'wf-agh-4', tag: 'AGH B2', root: 'LEAD', verb: 'lead (led)', noun: 'leader, leadership', adjective: 'leading', pl: 'prowadzić / przywództwo / wiodący' },
+  { id: 'wf-agh-5', tag: 'AGH B2', root: 'DIFFER', verb: 'differ, differentiate', noun: 'difference', adjective: 'different', adverb: 'differently', pl: 'różnić się / wyróżniać (markę)', trap: 'aims to DIFFERENTIATE the brand (Mock 1!)' },
+  { id: 'wf-agh-6', tag: 'AGH B2', root: 'COMPREHEND', verb: 'comprehend', noun: 'comprehension', adjective: 'comprehensive', pl: 'zrozumieć / kompleksowy, wszechstronny', trap: 'comprehensive training programmes (Mock 2!)' },
+  { id: 'wf-agh-7', tag: 'AGH B2', root: 'ABLE', verb: 'enable', noun: 'ability, inability', adjective: 'able, unable', pl: 'umożliwiać / zdolność', trap: 'enabling them to perform (Mock 2!)' },
+  { id: 'wf-agh-8', tag: 'AGH B2', root: 'EMPLOY', verb: 'employ', noun: 'employer, employee, employment, unemployment', adjective: 'employable, unemployed', pl: 'zatrudniać / pracodawca / pracownik / zatrudnienie' },
+  { id: 'wf-agh-9', tag: 'Units 1–3', root: 'EFFICIENT', verb: '-', noun: 'efficiency, inefficiency', adjective: 'efficient, inefficient', adverb: 'efficiently', pl: 'wydajny / wydajność' },
+  { id: 'wf-agh-10', tag: 'Units 1–3', root: 'RELY', verb: 'rely (on)', noun: 'reliability', adjective: 'reliable, unreliable', adverb: 'reliably', pl: 'polegać na / niezawodny' },
+  { id: 'wf-agh-11', tag: 'Units 1–3', root: 'SATISFY', verb: 'satisfy', noun: 'satisfaction, dissatisfaction', adjective: 'satisfied, dissatisfied, satisfactory', adverb: 'satisfactorily', pl: 'zadowalać / zadowolenie / niezadowolony' },
+  // EXTRA B2 BUSINESS & ACADEMIC WORD FAMILIES (45 total!)
+  { id: 'wf-ex-1', tag: 'AGH B2', root: 'ANALYSE', verb: 'analyse', noun: 'analysis, analyst', adjective: 'analytical', adverb: 'analytically', pl: 'analizować / analiza / analityczny' },
+  { id: 'wf-ex-2', tag: 'AGH B2', root: 'DECIDE', verb: 'decide', noun: 'decision', adjective: 'decisive, indecisive', adverb: 'decisively', pl: 'decydować / decyzja / zdecydowany' },
+  { id: 'wf-ex-3', tag: 'Unit 4 · KOLOS', root: 'ECONOMY', verb: 'economise', noun: 'economy, economics, economist', adjective: 'economic, economical', adverb: 'economically', pl: 'gospodarka / ekonomiczny / oszczędny', trap: 'economic = gospodarczy; economical = oszczędny!' },
+  { id: 'wf-ex-4', tag: 'AGH B2', root: 'FINANCE', verb: 'finance', noun: 'finance, finances', adjective: 'financial', adverb: 'financially', pl: 'finansować / finanse / finansowy' },
+  { id: 'wf-ex-5', tag: 'Units 1–3', root: 'MANAGE', verb: 'manage', noun: 'management, manager', adjective: 'manageable, managerial', pl: 'zarządzać / zarządzanie / wykonalny' },
+  { id: 'wf-ex-6', tag: 'Units 1–3', root: 'ORGANISE', verb: 'organise', noun: 'organisation, organiser', adjective: 'organised, organisational', pl: 'organizować / organizacja / zorganizowany' },
+  { id: 'wf-ex-7', tag: 'Unit 5', root: 'PRODUCE', verb: 'produce', noun: 'production, product, productivity', adjective: 'productive, unproductive', adverb: 'productively', pl: 'produkować / produkcja / produktywność / wydajny' },
+  { id: 'wf-ex-8', tag: 'Unit 4 · KOLOS', root: 'SOLVE', verb: 'solve', noun: 'solution', adjective: 'solvable, unsolvable', pl: 'rozwiązać / rozwiązanie' },
+  { id: 'wf-ex-9', tag: 'Unit 4 · KOLOS', root: 'STRATEGY', verb: 'strategise', noun: 'strategy, strategist', adjective: 'strategic', adverb: 'strategically', pl: 'strategia / strategiczny / strategicznie' },
+  { id: 'wf-ex-10', tag: 'AGH B2', root: 'ADAPT', verb: 'adapt', noun: 'adaptation, adaptability', adjective: 'adaptable', pl: 'dostosować / adaptacja / elastyczny' },
+  { id: 'wf-ex-11', tag: 'Units 1–3', root: 'COMMUNICATE', verb: 'communicate', noun: 'communication, communicator', adjective: 'communicative', pl: 'komunikować się / komunikacja / komunikatywny' },
+  { id: 'wf-ex-12', tag: 'AGH B2', root: 'CREATE', verb: 'create', noun: 'creation, creativity, creator', adjective: 'creative', adverb: 'creatively', pl: 'tworzyć / kreatywność / twórczy' },
+  { id: 'wf-ex-13', tag: 'Unit 4 · KOLOS', root: 'INVEST', verb: 'invest', noun: 'investment, investor', adjective: '-', pl: 'inwestować / inwestycja / inwestor' },
+  { id: 'wf-ex-14', tag: 'Units 1–3', root: 'MOTIVATE', verb: 'motivate', noun: 'motivation', adjective: 'motivated, motivating, demotivated', pl: 'motywować / motywacja / zmotywowany' },
+  { id: 'wf-ex-15', tag: 'Unit 5', root: 'NEGOTIATE', verb: 'negotiate', noun: 'negotiation, negotiator', adjective: 'negotiable', pl: 'negocjować / negocjacje / do negocjacji' },
+];
+
+export interface WFDrillQuestion extends GapQuestion {
+  group: 'Unit 4 · KOLOS' | 'Unit 5' | 'AGH B2';
+}
+
+export const WORD_FORMATION_DRILLS: WFDrillQuestion[] = [
+  // UNIT 4 · KOLOS (12 pytań)
+  {
+    id: 'wfd-1',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'His ideas were totally ___ and changed the way the company worked.',
+    hint: 'INNOVATE',
+    answers: ['innovative'],
+    explanation: 'Po przysłówku "totally" potrzebujemy przymiotnika → innovative.',
+  },
+  {
+    id: 'wfd-2',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'The ___ of our business is due to the success of our new product.',
+    hint: 'EXPAND',
+    answers: ['expansion'],
+    explanation: 'Konstrukcja "The ___ of" wymaga rzeczownika → expansion.',
+  },
+  {
+    id: 'wfd-3',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'We are not doing well due to our ___ to appeal to a younger market.',
+    hint: 'FAIL',
+    answers: ['failure'],
+    explanation: 'Po zaimku "our" stawiamy rzeczownik → failure.',
+  },
+  {
+    id: 'wfd-4',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'A press release announced the ___ before staff were told about it.',
+    hint: 'ACQUIRE',
+    answers: ['acquisition'],
+    explanation: 'Po "the" potrzebujemy rzeczownika → acquisition.',
+  },
+  {
+    id: 'wfd-5',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'When we ___ the company, we kept all the staff.',
+    hint: 'TAKEOVER',
+    answers: ['took over'],
+    explanation: 'Potrzebujemy czasownika w Past Simple (bo dalej jest "kept") → took over.',
+  },
+  {
+    id: 'wfd-6',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'If this new strategy ___, we will be making a profit again.',
+    hint: 'SUCCESS',
+    answers: ['succeeds'],
+    explanation: 'I tryb warunkowy (If + Present Simple, will...) → czasownik w 3. os. lp.: succeeds.',
+  },
+  {
+    id: 'wfd-7',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'Which supermarket chains offer the most ___ prices in your country?',
+    hint: 'COMPETE',
+    answers: ['competitive'],
+    explanation: 'Stopień najwyższy przymiotnika ("the most ___ prices") → competitive.',
+  },
+  {
+    id: 'wfd-8',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'Can you name two countries with fast-___ emerging markets?',
+    hint: 'GROW',
+    answers: ['growing'],
+    explanation: 'Przymiotnik złożony: fast-growing.',
+  },
+  {
+    id: 'wfd-9',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'In the first decade of the 21st century, Kraft’s ___ was poor.',
+    hint: 'PERFORM',
+    answers: ['performance'],
+    explanation: 'Po dopełniaczu saksońskim ("Kraft’s") potrzebujemy rzeczownika → performance.',
+  },
+  {
+    id: 'wfd-10',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'Entering an unfamiliar market can be very ___ without a PEST analysis.',
+    hint: 'RISK',
+    answers: ['risky'],
+    explanation: 'Po "be very" potrzebujemy przymiotnika → risky (nie "riskable"!).',
+  },
+  {
+    id: 'wfd-11',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'Heinz was innovative in its ___ of new product lines.',
+    hint: 'DEVELOP',
+    answers: ['development'],
+    explanation: 'Po "its" przed "of" stawiamy rzeczownik abstrakcyjny → development (nie "developer"!).',
+  },
+  {
+    id: 'wfd-12',
+    group: 'Unit 4 · KOLOS',
+    prompt: 'The ___ between Kraft and Heinz created the world’s fifth-largest food company.',
+    hint: 'MERGE',
+    answers: ['merger'],
+    explanation: 'Rzeczownik od merge = merger (fuzja).',
+  },
+
+  // UNIT 5 · LOGISTICS (7 pytań z Review 5.1 str. 108)
+  {
+    id: 'wfd-13',
+    group: 'Unit 5',
+    prompt: 'The rise of online shopping means that fast ___ of goods is key.',
+    hint: 'DELIVER',
+    answers: ['delivery'],
+    explanation: 'Po przymiotniku "fast" potrzebujemy rzeczownika → delivery.',
+  },
+  {
+    id: 'wfd-14',
+    group: 'Unit 5',
+    prompt: 'Consequently, ___ or retailers must ensure that orders arrive safely.',
+    hint: 'MANUFACTURE',
+    answers: ['manufacturers'],
+    explanation: 'Rzeczownik osobowy/firma w liczbie mnogiej (obok "retailers") → manufacturers.',
+  },
+  {
+    id: 'wfd-15',
+    group: 'Unit 5',
+    prompt: 'They must ensure that the ___ of orders is carefully planned.',
+    hint: 'DISTRIBUTE',
+    answers: ['distribution'],
+    explanation: 'Konstrukcja "the ___ of" → rzeczownik: distribution.',
+  },
+  {
+    id: 'wfd-16',
+    group: 'Unit 5',
+    prompt: 'Planning deliveries is the job of a ___.',
+    hint: 'LOGISTICS',
+    answers: ['logistician'],
+    explanation: 'Po "job of a" potrzebujemy nazwy zawodu (osoby) → logistician!',
+  },
+  {
+    id: 'wfd-17',
+    group: 'Unit 5',
+    prompt: 'Furthermore, the ___ needs to be sufficient to keep goods safe.',
+    hint: 'PACK',
+    answers: ['packaging'],
+    explanation: 'Opakowanie ochronne w logistyce → packaging.',
+  },
+  {
+    id: 'wfd-18',
+    group: 'Unit 5',
+    prompt: 'Some companies ___ their own vehicles for transporting goods.',
+    hint: 'OPERATOR',
+    answers: ['operate'],
+    explanation: 'Po podmiocie "Some companies" potrzebujemy czasownika → operate.',
+  },
+  {
+    id: 'wfd-19',
+    group: 'Unit 5',
+    prompt: 'They use specialist couriers for transporting ___ to customers.',
+    hint: 'PACK',
+    answers: ['packages', 'parcels'],
+    explanation: 'Rzeczownik w liczbie mnogiej (paczki) → packages (lub parcels).',
+  },
+
+  // AGH B2 EXAMS (11 pytań z Mock 1, Mock 2 i sylabusa)
+  {
+    id: 'wfd-20',
+    group: 'AGH B2',
+    prompt: 'Investors are closely monitoring the ___ of stock prices amid tensions.',
+    hint: 'VOLATILE',
+    answers: ['volatility'],
+    explanation: 'AGH Mock 1: "the ___ of" → rzeczownik: volatility.',
+  },
+  {
+    id: 'wfd-21',
+    group: 'AGH B2',
+    prompt: 'The recent ___ of the organization aims to improve efficiency.',
+    hint: 'STRUCTURE',
+    answers: ['restructuring'],
+    explanation: 'AGH Mock 1: zmiana struktury dla poprawy efektywności → restructuring.',
+  },
+  {
+    id: 'wfd-22',
+    group: 'AGH B2',
+    prompt: 'The company’s strong ___ has been pivotal in navigating uncertainties.',
+    hint: 'LEAD',
+    answers: ['leadership'],
+    explanation: 'AGH Mock 1: po "strong" potrzebujemy rzeczownika abstrakcyjnego → leadership.',
+  },
+  {
+    id: 'wfd-23',
+    group: 'AGH B2',
+    prompt: 'The company’s commitment to ___ has strengthened trust among stakeholders.',
+    hint: 'TRANSPARENT',
+    answers: ['transparency'],
+    explanation: 'AGH Mock 1: po przyimku "to" (commitment to sth) → rzeczownik: transparency.',
+  },
+  {
+    id: 'wfd-24',
+    group: 'AGH B2',
+    prompt: 'The marketing strategy aims to ___ the brand in a saturated marketplace.',
+    hint: 'DIFFER',
+    answers: ['differentiate'],
+    explanation: 'AGH Mock 1: po "aims to" potrzebujemy czasownika „wyróżnić” → differentiate.',
+  },
+  {
+    id: 'wfd-25',
+    group: 'AGH B2',
+    prompt: 'Companies recognize the ___ of having a highly skilled workforce.',
+    hint: 'IMPORTANT',
+    answers: ['importance'],
+    explanation: 'AGH Mock 2: "the ___ of" → rzeczownik: importance.',
+  },
+  {
+    id: 'wfd-26',
+    group: 'AGH B2',
+    prompt: 'Organizations are investing in ___ training programmes.',
+    hint: 'COMPREHEND',
+    answers: ['comprehensive'],
+    explanation: 'AGH Mock 2: przymiotnik „kompleksowy / wszechstronny” → comprehensive.',
+  },
+  {
+    id: 'wfd-27',
+    group: 'AGH B2',
+    prompt: 'Training sessions develop abilities, ___ them to perform at their best.',
+    hint: 'ABLE',
+    answers: ['enabling'],
+    explanation: 'AGH Mock 2: imiesłów od czasownika "enable" (umożliwiając im) → enabling.',
+  },
+  {
+    id: 'wfd-28',
+    group: 'AGH B2',
+    prompt: 'These programs focus on fostering a culture of ___ learning.',
+    hint: 'CONTINUE',
+    answers: ['continuous', 'continual'],
+    explanation: 'AGH Mock 2: kolokacja "continuous learning" (ciągłe uczenie się).',
+  },
+  {
+    id: 'wfd-29',
+    group: 'AGH B2',
+    prompt: 'I am writing to express my ___ with the malfunctioning equipment.',
+    hint: 'SATISFY',
+    answers: ['dissatisfaction'],
+    explanation: 'Kontekst reklamacji ("malfunctioning") wymaga przeczenia → dissatisfaction.',
+  },
+  {
+    id: 'wfd-30',
+    group: 'AGH B2',
+    prompt: 'Not one potential ___ has invited him for an interview yet.',
+    hint: 'EMPLOY',
+    answers: ['employer'],
+    explanation: 'Ten, kto zaprasza na rozmowę o pracę to pracodawca → employer (nie employee!).',
+  },
+];
