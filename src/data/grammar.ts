@@ -1,63 +1,92 @@
 import type { GrammarTopic } from './types';
 
 export const GRAMMAR_TOPICS: GrammarTopic[] = [
+  // =========================================================================
+  // 1. CZASY (ALL TENSES MIX)
+  // =========================================================================
   {
     id: 'all-tenses-mix',
-    unitTag: 'KOLOS · Konstrukcja #1',
+    unitTag: 'KOLOS · #1 Czasy',
     isKolosPriority: true,
-    title: '1. Czasy (All Tenses Mix — Present, Past, Perfect, Future)',
-    subtitle: 'Pełne zestawienie czasów z kolokwium: słowa-klucze, kontrast Present Perfect vs Past Simple, Past Perfect i Future',
-    rules: [
+    title: '1. Czasy — Szybka Tabela Rozpoznawania (All Tenses)',
+    subtitle: 'Znajdź w zdaniu słowo-klucz z lewej kolumny i wpisz wzór ze środkowej kolumny',
+    quickSteps: [
+      'Szukaj w zdaniu określenia czasu (np. yesterday, since, by the time, this time next week).',
+      'Sprawdź, czy czas jest zamknięty w przeszłości (last year / ago → Past Simple), czy trwa do teraz (since / for / so far → Present Perfect).',
+      'Jeśli masz dwie czynności w przeszłości: wcześniejsza to had + V3, a tło to was/were + V-ing.',
+    ],
+    tableHeaders: ['1. Co widzisz w zdaniu? (Słowa-klucze)', '2. Jaki czas i wzór wpisujesz?', '3. Przykład'],
+    tableRows: [
       {
-        title: 'Teraźniejszość: Present Simple vs Present Continuous',
-        formula: 'V / V-s (do/does)  vs  am / is / are + V-ing',
-        usage:
-          'Present Simple: stałe fakty, rutyna, harmonogramy i rozkłady jazdy ("The train leaves at 8"). Present Continuous: czynność trwająca teraz, tymczasowa sytuacja, trendy ("Sales are falling") lub umówione spotkanie ("I’m meeting the CEO tomorrow").',
-        examples: [
-          'Our company pursues a bold strategy in emerging markets. (stały fakt)',
-          'At the moment, we are running three weeks behind schedule. (teraz / tymczasowo)',
-          'The plane takes off at 7:30 a.m. tomorrow. (rozkład / grafik → Present Simple!)',
-        ],
-        watchOut:
-          'Czasowniki statyczne (know, believe, understand, own, belong, include, seem, need, prefer) NIE mają formy -ing! Wyjątek ze zmianą znaczenia: I think (sądzę) vs I’m thinking (rozmyślam); I see (rozumiem) vs I’m seeing (spotykam się).',
+        situation: 'Stały fakt, rutyna lub rozkład jazdy / lotów',
+        keywords: ['usually', 'every day', 'always', 'rozklad: leaves at 8:00', 'includes'],
+        formula: 'Present Simple: V / V-s (don’t / doesn’t + V)',
+        exampleEn: 'The price includes return flights. / The plane leaves at 7 a.m.',
+        examplePl: 'Cena zawiera loty powrotne. / Samolot odlatuje o 7:00.',
       },
       {
-        title: 'Przeszłość vs Teraźniejszość: Past Simple vs Present Perfect (Simple & Continuous)',
-        formula: 'V2 / -ed (kiedy?)  vs  have/has + V3 (skutek / jak długo?)  vs  have/has been + V-ing',
-        usage:
-          'Past Simple używamy zawsze, gdy czas jest ZAMKNIĘTY i określony (yesterday, last year, in 2020, two days ago, when...). Present Perfect łączy przeszłość z teraźniejszością (since, for, already, just, yet, recently, so far, this year, ever, never).',
-        examples: [
-          'Last year sales fell by 15% due to the economic recession. (zamknięte "last year" → Past Simple)',
-          'So far this year, we have launched three new product lines. ("this year" trwa → Present Perfect)',
-          'She has been working on this market report since Monday / for three hours. (nacisk na ciągłość trwania → Present Perfect Continuous)',
-          'How long have you known him? (know = statyczny → Present Perfect Simple, nie Continuous!)',
-        ],
-        watchOut:
-          'Widzisz "ago / yesterday / last ... / in 2022 / when I was..." → ZAWSZE Past Simple! Widzisz "since / for / so far / yet / already / recently" → Present Perfect!',
+        situation: 'Dzieje się teraz, tymczasowo lub umówione spotkanie',
+        keywords: ['now', 'at the moment', 'currently', 'tomorrow (spotkanie)'],
+        formula: 'Present Continuous: am / is / are + V-ing',
+        exampleEn: 'We are running behind schedule at the moment.',
+        examplePl: 'W tej chwili mamy opóźnienie w harmonogramie.',
       },
       {
-        title: 'Tło i Zaprzeszłość: Past Continuous vs Past Perfect',
-        formula: 'was / were + V-ing (tło)  vs  had + V3 (wcześniejsza czynność w przeszłości)',
-        usage:
-          'Past Continuous to długa czynność w tle przerwana krótszą (Past Simple). Past Perfect ("zaprzeszły") oznacza czynność, która wydarzyła się ZANIM nastąpiła inna czynność w przeszłości (by the time we arrived, before, after, already).',
-        examples: [
-          'We were going over the figures when the director stepped in. (tło: were going over + nagłe wejście: stepped in)',
-          'By the time we got to the office, the meeting had already started. (najpierw się zaczęło → had started, potem dotarliśmy → got)',
-          'When we took over the company, they had been losing money for years. (Past Perfect Continuous)',
-        ],
+        situation: 'Zamknięta przeszłość (wiadomo KIEDY to było)',
+        keywords: ['yesterday', 'last year', 'in 2021', '... ago', 'when I was...'],
+        formula: 'Past Simple: II forma / -ed (didn’t + V)',
+        exampleEn: 'Last year sales fell by 15% due to the recession.',
+        examplePl: 'W zeszłym roku sprzedaż spadła o 15% z powodu recesji.',
       },
       {
-        title: 'Przyszłość: will vs be going to vs Future Continuous vs Future Perfect',
-        formula: 'will + V (decyzja/opinia) | going to + V (zamiar/dowód) | will be + V-ing (w trakcie) | will have + V3 (ukończone do...)',
-        usage:
-          'Future Continuous ("This time next week...") opisuje bycie w trakcie czynności w przyszłości. Future Perfect ("By Friday / By next month / By 2030...") opisuje czynność, która ZOSTANIE UKOŃCZONA przed danym momentem w przyszłości.',
-        examples: [
-          'This time tomorrow, we will be flying to Berlin. (Future Continuous)',
-          'By next Friday, we will have finished the PEST analysis. (Future Perfect — słowo klucz: BY + czas przyszły!)',
-          'Look at those dark clouds — it is going to rain. (widoczny dowód → going to)',
-        ],
+        situation: 'Czynność w tle w przeszłości (przerwana inną)',
+        keywords: ['while', 'when + Past Simple (np. when the CEO entered)'],
+        formula: 'Past Continuous: was / were + V-ing',
+        exampleEn: 'They were looking at the figures when the CEO entered.',
+        examplePl: 'Patrzyli na wykresy (tło), kiedy wszedł prezes.',
+      },
+      {
+        situation: 'Przeszłość połączona z TERAZ (skutek / niezamknięty okres)',
+        keywords: ['already', 'just', 'yet', 'so far', 'this year', 'recently', 'ever / never'],
+        formula: 'Present Perfect: have / has + III forma (V3)',
+        exampleEn: 'So far this year, we have launched three new product lines.',
+        examplePl: 'Jak dotąd w tym roku wypuściliśmy trzy nowe linie produktów.',
+      },
+      {
+        situation: 'Trwa nieprzerwanie od przeszłości DO TERAZ (nacisk na ciągłość)',
+        keywords: ['since (od punktu)', 'for (przez okres)', 'How long...?'],
+        formula: 'Present Perfect Cont.: have / has been + V-ing',
+        exampleEn: 'She has been working on this project since last month.',
+        examplePl: 'Ona pracuje nad tym projektem (nieprzerwanie) od zeszłego miesiąca.',
+      },
+      {
+        situation: 'ZAPRZESZŁOŚĆ (stało się ZANIM wydarzyło się coś innego w przeszłości)',
+        keywords: ['by the time we got/arrived', 'before + Past', 'after', 'asked if...'],
+        formula: 'Past Perfect: had + III forma (V3)',
+        exampleEn: 'By the time we got to the office, the client had already left.',
+        examplePl: 'Zanim dotarliśmy do biura, klient już (wcześniej) wyszedł.',
+      },
+      {
+        situation: 'PRZYSZŁOŚĆ: W trakcie o danej porze vs Ukończone DO momentu',
+        keywords: ['This time next week → will be V-ing', 'By Friday / By 2030 → will have V3'],
+        formula: 'will be + V-ing  LUB  will have + V3',
+        exampleEn: 'This time tomorrow we will be flying. / By Friday we will have finished.',
+        examplePl: 'Jutro o tej porze będziemy lecieć. / Do piątku skończymy.',
       },
     ],
+    trapPairs: [
+      {
+        wrong: 'I have been knowing him for 5 years.',
+        right: 'I have known him for 5 years.',
+        why: 'Czasowniki statyczne (know, believe, include, own, understand, need) NIE mają formy -ing!',
+      },
+      {
+        wrong: 'We have signed the contract last week.',
+        right: 'We signed the contract last week.',
+        why: 'Gdy jest konkretny moment w przeszłości (last week, yesterday, in 2020, ago) → ZAWSZE Past Simple!',
+      },
+    ],
+    rules: [],
     exercises: [
       {
         id: 'tm-1',
@@ -145,49 +174,79 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
       },
     ],
   },
+
+  // =========================================================================
+  // 2. CONDITIONALS (0, I, II, III + MIXED)
+  // =========================================================================
   {
     id: 'conditionals-kolos',
-    unitTag: 'KOLOS · Konstrukcja #2',
+    unitTag: 'KOLOS · #2 Conditionale',
     isKolosPriority: true,
-    title: '2. Conditionale (0, I, II, III tryb warunkowy + Mixed & unless)',
-    subtitle: 'Pełna tabela trybów warunkowych na kolokwium: realne, nierealne teraz, przeszłe i mieszane',
-    rules: [
+    title: '2. Conditionale (Tryby Warunkowe 0, I, II, III + Mixed)',
+    subtitle: 'Spójrz na znaną połowę zdania i dobierz brakującą połówkę z tabeli',
+    quickSteps: [
+      'Zasada #1: W części z "IF" lub "UNLESS" NIGDY nie wpisujemy "will" ani "would"!',
+      'Spójrz na drugą część zdania: widzisz "will + V" → I tryb (Present Simple). Widzisz "would + V" → II tryb (Past Simple). Widzisz "would have + V3" → III tryb (had + V3).',
+      'Jeśli w części z "IF" jest "last year" (przeszłość), a w drugiej "now" (teraźniejszość) → Mixed: If + had V3, would + V.',
+    ],
+    tableHeaders: ['Tryb i kiedy używamy', 'Wzór: [Część z IF]  →  [Zdanie główne]', 'Przykład'],
+    tableRows: [
       {
-        title: 'Tabela 4 głównych trybów warunkowych (0, I, II, III)',
-        formula: '0: If + Pres, Pres | I: If + Pres, will + V | II: If + Past Simple, would + V | III: If + Past Perfect, would have + V3',
-        usage:
-          'Klucz do rozwiązania każdego zadania: sprawdź, czy druga część zdania ma "will + V" (I tryb), "would + V" (II tryb — sytuacja teraz/przyszłość), czy "would have + V3" (III tryb — zamknięta przeszłość!).',
-        examples: [
-          'Zero (0): If inflation rises, costs increase. (zawsze prawdziwe prawo ekonomii)',
-          'First (I): If this new strategy succeeds, we will make a profit again. (realna szansa w przyszłości — po IF zawsze Present Simple!)',
-          'Second (II): If I were you, I wouldn’t take such a big gamble. / If prices were much lower, we would buy more. (gdybanie o teraźniejszości)',
-          'Third (III): If we had anticipated the crisis last year, we wouldn’t have lost market share. (gdybanie o przeszłości — już za późno!)',
-        ],
-        watchOut:
-          'NIGDY nie wstawiaj "will" ani "would" w części zdania zaczynającej się od "if" lub "unless"! W II trybie po I/he/she/it formalnie piszemy "were" (If I were you / If the company were bigger).',
+        situation: '0 Conditional — zawsze prawdziwe prawa / fakty',
+        keywords: ['zawsze (100%)', 'prawa ekonomii / przyrody'],
+        formula: 'If + Present Simple,  Present Simple',
+        exampleEn: 'If inflation rises, costs increase.',
+        examplePl: 'Jeśli inflacja rośnie, koszty rosną (zawsze).',
       },
       {
-        title: 'Mixed Conditional (Tryb mieszany: przeszła przyczyna → obecny skutek)',
-        formula: 'If + Past Perfect (had + V3) [yesterday/last year],  would + bezokolicznik [now/today]',
-        usage:
-          'Gdy warunek dotyczy PRZESZŁOŚCI (np. last year, yesterday), a skutek ma słowo "now / today / right now", łączymy III tryb w zdaniu z "if" oraz II tryb w zdaniu głównym!',
-        examples: [
-          'If we had invested in automation five years ago, we would be a major player now.',
-          'If he hadn’t missed that opportunity, he would have a much higher profit margin today.',
-        ],
+        situation: 'I Conditional — realna przyszłość (duża szansa)',
+        keywords: ['next month', 'tomorrow', 'realny warunek'],
+        formula: 'If + Present Simple,  will + bezokolicznik',
+        exampleEn: 'If this strategy succeeds, we will make a profit.',
+        examplePl: 'Jeśli ta strategia się powiedzie, osiągniemy zysk.',
       },
       {
-        title: 'Inne spójniki warunkowe: unless, provided that, as long as, in case',
-        formula: 'unless = if ... not (z czasownikiem TWIERDZĄCYM!)  |  in case = na wypadek gdyby',
-        usage:
-          'Po "unless" czasownik jest zawsze twierdzący (bo przeczenie siedzi już w "unless"). "In case" oznacza zabezpieczenie z góry („na wypadek gdyby”).',
-        examples: [
-          'We will go bankrupt unless we cut costs immediately. (= if we don’t cut costs)',
-          'We can expand across borders provided that / as long as we find a reliable partner.',
-          'Write down the figures in case the system crashes. (na wypadek gdyby padł system)',
-        ],
+        situation: 'II Conditional — gdybanie o TERAŹNIEJSZOŚCI / rada',
+        keywords: ['teraz (nierealne)', 'If I were you...'],
+        formula: 'If + Past Simple (V2 / were),  would + bezokolicznik',
+        exampleEn: 'If I were you, I wouldn’t buy a car. / If prices were lower, we would go.',
+        examplePl: 'Na Twoim miejscu nie kupowałbym auta. / Gdyby ceny były niższe, pojechalibyśmy.',
+      },
+      {
+        situation: 'III Conditional — gdybanie o PRZESZŁOŚCI (już po fakcie!)',
+        keywords: ['yesterday', 'last year', 'już za późno'],
+        formula: 'If + Past Perfect (had + V3),  would have + V3',
+        exampleEn: 'If they had known about the traffic, they would have left earlier.',
+        examplePl: 'Gdyby (wtedy) wiedzieli o korkach, wyjechaliby wcześniej.',
+      },
+      {
+        situation: 'Mixed Conditional — przeszły błąd → skutek TERAZ',
+        keywords: ['If ... last year (przeszłość)', '... now / today (teraz)'],
+        formula: 'If + had + V3 (przeszłość),  would + bezokolicznik (teraz!)',
+        exampleEn: 'If we had evaluated the risk last year, we wouldn’t be in crisis now.',
+        examplePl: 'Gdybyśmy oszacowali ryzyko w zeszłym roku, nie bylibyśmy teraz w kryzysie.',
+      },
+      {
+        situation: 'UNLESS (= jeśli nie / chyba że) oraz IN CASE (= na wypadek gdyby)',
+        keywords: ['unless + czasownik twierdzący!', 'in case = zabezpieczenie'],
+        formula: 'unless + Present Simple (bez not!)  |  in case + Present Simple',
+        exampleEn: 'We will lose clients unless we cut costs. / Take vouchers in case people come.',
+        examplePl: 'Stracimy klientów, jeśli nie obetniemy kosztów.',
       },
     ],
+    trapPairs: [
+      {
+        wrong: 'If this strategy will succeed, we will make a profit.',
+        right: 'If this strategy succeeds, we will make a profit.',
+        why: 'Po "If" oraz "unless" obowiązuje zakaz używania "will"!',
+      },
+      {
+        wrong: 'You won’t pass unless you don’t study.',
+        right: 'You won’t pass unless you study.',
+        why: '"Unless" ma już w sobie przeczenie ("jeśli nie"), więc czasownik po nim MUSI być twierdzący!',
+      },
+    ],
+    rules: [],
     exercises: [
       {
         id: 'cond-1',
@@ -254,95 +313,79 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
       },
       {
         id: 'cond-10',
-        prompt: 'If we reduce our prices any further, it ___ just squeeze our profit margin.',
-        hint: 'WILL',
-        answers: ['will'],
-        explanation: 'I tryb warunkowy (If + reduce [Present Simple]) → will + bezokolicznik.',
+        prompt: 'Don’t touch the iron or you’ll burn yourself. → If you ___ burn yourself. (Karta 3/15 zad. 15.5)',
+        hint: 'TOUCH / WILL',
+        answers: ['touch the iron, you will', 'touch the iron you will'],
+        explanation: 'I tryb warunkowy: If you touch the iron, you will burn yourself.',
       },
     ],
   },
+
+  // =========================================================================
+  // 3. I WISH / IF ONLY & I SHOULD vs SHOULD HAVE + V3
+  // =========================================================================
   {
     id: 'wish-should-have-kolos',
-    unitTag: 'KOLOS · Konstrukcje #3 i #4',
+    unitTag: 'KOLOS · #3 Wish & Should',
     isKolosPriority: true,
-    title: '3 & 4. "I wish / If only / I’d rather" oraz "I should vs should have + V3"',
-    subtitle: 'Wyrażanie żalu (teraźniejszość vs przeszłość), irytacji oraz krytyki przeszłych błędów',
-    rules: [
+    title: '3. "I wish / If only" oraz "I should" vs "I should have + V3"',
+    subtitle: 'Prosta zasada: najpierw sprawdź, czy zdanie dotyczy TERAZ, czy PRZESZŁOŚCI!',
+    quickSteps: [
+      'KROK 1: Sprawdź, kiedy dzieje się sytuacja — TERAZ (now, right now, I am...) czy W PRZESZŁOŚCI (yesterday, last year, I didn’t..., He failed...).',
+      'KROK 2 (dla I WISH): Jeśli TERAZ → wpisz Past Simple (np. had, were, didn’t have). Jeśli PRZESZŁOŚĆ → wpisz had / hadn’t + V3 (np. had locked, hadn’t shouted).',
+      'KROK 3 (dla SHOULD): Rada na TERAZ → should + V. Błąd w PRZESZŁOŚCI („powinien był”) → should have + V3 / shouldn’t have + V3.',
+    ],
+    tableHeaders: ['Sytuacja (TERAZ czy PRZESZŁOŚĆ?)', 'Wzór (co wpisujesz w lukę)', 'Przykład z kart pracy i kolosa'],
+    tableRows: [
       {
-        title: 'Konstrukcja "I wish / If only" — 3 sytuacje (Tabela na kolosa!)',
-        formula: '1) Teraźniejszość: I wish + Past Simple | 2) Przeszłość: I wish + Past Perfect (had + V3) | 3) Irytacja: I wish + osoba + would + V',
-        usage:
-          'W "I wish" zawsze cofamy czas o jeden krok do tyłu! Jeśli żałujesz czegoś TERAZ (now, today, right now) → Past Simple. Jeśli żałujesz czegoś z PRZESZŁOŚCI (yesterday, last year, earlier) → Past Perfect (had + V3). Jeśli denerwuje Cię czyjeś zachowanie i chcesz, żeby ktoś przestał → would + V.',
-        examples: [
-          'TERAZ: I wish I had more expertise in marketing right now. (teraz nie mam → Past Simple: had)',
-          'TERAZ: I wish our campsite were / was better equipped. (teraz nie jest → were/was)',
-          'PRZESZŁOŚĆ: I wish we had carried out a survey before launching the product. (nie zrobiliśmy tego wcześniej → Past Perfect: had carried out)',
-          'PRZESZŁOŚĆ: I wish I hadn’t taken such a huge risk last year. (żałuję, że zaryzykowałem → hadn’t taken)',
-          'IRYTACJA: I wish my manager wouldn’t impose his way forward every time! (irytujący nawyk innej osoby → would / wouldn’t)',
-        ],
-        watchOut:
-          'Zasada żelazna: NIGDY nie pisz "I wish I would..." ani "I wish he will..."! "Would" po "I wish" wolno użyć tylko dla INNEJ osoby/rzeczy (I wish you would / I wish it would stop raining).',
+        situation: 'I WISH (1) — Żal o TERAŹNIEJSZOŚĆ (chciałbym, żeby TERAZ było inaczej)',
+        keywords: ['now', 'right now', 'I want to be...', 'I haven’t got...'],
+        formula: 'I wish + Past Simple (V2 / were / didn’t + V)',
+        exampleEn: 'I wish I had a car. / I wish I were at home. / I wish I didn’t have to study.',
+        examplePl: 'Chciałbym mieć auto (teraz nie mam). / Szkoda, że muszę się uczyć.',
       },
       {
-        title: 'Konstrukcja "I’d rather" (ten sam podmiot vs zmiana podmiotu — Karta 2/15 str. 67!)',
-        formula: 'Ten sam podmiot: I’d rather + V (teraz) / have + V3 (przeszłość!)  |  Inna osoba: I’d rather sb + Past Simple (teraz) / Past Perfect (przeszłość!)',
-        usage:
-          'Dokładna tabelka z Twojej karty pracy (str. 67)! Rozstrzyga zawsze kombinacja dwóch pytań: 1) Czy podmiot się zmienia (I’d rather go vs I’d rather YOU...), 2) Czy chodzi o teraz/przyszłość (tonight, tomorrow), czy o przeszłość (last year, yesterday, when she was at college, last night)!',
-        examples: [
-          'TEN SAM PODMIOT (teraz/przyszłość → V): He would rather live in New York. / They’d rather eat fish tomorrow.',
-          'TEN SAM PODMIOT (przeszłość → have + V3!): Jenny would rather have gone to the Caribbean last year. / She’d rather have studied psychology when she was at college.',
-          'INNA OSOBA (teraz/przyszłość → Past Simple!): I’d rather you didn’t do that again. / Mum would rather I stayed home tonight. / I’d rather you bought the meat.',
-          'INNA OSOBA (przeszłość → Past Perfect: had + V3!): She’d rather we hadn’t argued last night. / I’d rather we had taken the bus when we went into town.',
-        ],
-        watchOut:
-          'Uwaga na zad. 7 pkt 7 i 9 z Twojej karty: w pkt 7 jest "(stay) home tonight" → Mum would rather I STAYED (nie studied!). W pkt 9 jest "when we went into town" (przeszłość + zmiana podmiotu "I’d rather we...") → I’d rather we HAD TAKEN (Past Perfect, nie took!).',
+        situation: 'I WISH (2) — Żal o PRZESZŁOŚĆ (szkoda, że WTEDY tak zrobiłem / nie zrobiłem)',
+        keywords: ['yesterday', 'last year', 'I’m sorry I didn’t...', 'I shouted...'],
+        formula: 'I wish + Past Perfect (had / hadn’t + V3)',
+        exampleEn: 'I wish I had locked the door. / I wish I hadn’t shouted at Mark.',
+        examplePl: 'Szkoda, że (wtedy) nie zamknąłem drzwi. / Żałuję, że nakrzyczałem na Marka.',
       },
       {
-        title: 'Transformacje: prefer vs would prefer vs would rather (Karta 2/15 str. 67, zad. 8 i 10)',
-        formula: 'prefer + V-ing/noun + TO + V-ing/noun  |  (would) prefer + TO V + RATHER THAN + V  |  would rather + V + THAN + V',
-        usage:
-          'Bardzo częste na transformacjach ze słowem kluczem (to / prefer / rather):',
-        examples: [
-          'prefer ... TO ... (NIGDY "than"!): I prefer listening to pop music TO classical music. / I prefer seeing films at the cinema TO watching them on TV.',
-          'prefer X TO Y (rzeczowniki): I prefer ice-cream TO chocolate. / I prefer vegetables TO fruit.',
-          'would prefer + TO V + RATHER THAN + V: She would prefer to see the sights rather than go to the tourist shops.',
-          'would prefer + TO V + RATHER THAN + V: I would prefer to go parachuting rather than go skiing.',
-          'would rather + V + THAN + V: He would rather play basketball than study for his exams.',
-        ],
-        watchOut:
-          'Uwaga na zad. 8 pkt 4 z Twojej karty: po "prefer" NIGDY nie piszemy "than"! Zawsze "I prefer ice-cream TO chocolate"!',
+        situation: 'I WISH (3) — Irytacja czyimś zachowaniem (chcę, żeby KTOŚ przestał)',
+        keywords: ['neighbours are playing...', 'my boss keeps interrupting'],
+        formula: 'I wish + INNA OSOBA + would / wouldn’t + V',
+        exampleEn: 'I wish my neighbours would stop playing loud music!',
+        examplePl: 'Chciałbym, żeby sąsiedzi przestali puszczać głośną muzykę!',
       },
       {
-        title: 'Krótkie odpowiedzi: So + operator + I  vs  Neither / Nor + operator + I (Karta 2/15 str. 67, zad. 9 i 10)',
-        formula: 'Twierdzenie → So + (am/do/have/did/will/would/can) + I  |  Przeczenie → Neither / Nor + operator (twierdzący!) + I',
-        usage:
-          'Powtarzamy ten sam operator (czasownik posiłkowy lub modalny), który jest w pierwszym zdaniu, z inwersją (operator przed "I"):',
-        examples: [
-          '1. "I love going to the cinema." → "So do I." (Present Simple → do)',
-          '2. "I haven’t seen Frank recently." → "Neither have I." / "Nor have I." (Present Perfect przeczenie → have)',
-          '3. "I didn’t go to see the play." / "I didn’t go to the party." → "Neither did I." (Past Simple przeczenie → did)',
-          '4. "I went to see the film Casino yesterday." → "So did I." (Past Simple twierdzenie → did)',
-          '5. "I couldn’t hear a thing at the concert." → "Neither could I." (modal couldn’t → could)',
-          '6. "I will never watch another violent film again." → "Neither will I." (UWAGA: "never" daje zdanie przeczące → Neither will I!)',
-          '7. "I am a big fan of Brad Pitt." → "So am I." (czasownik be → am)',
-          '8. "I would love to see Will Smith’s latest film." → "So would I." (would → would)',
-        ],
+        situation: 'SHOULD (1) — Rada na TERAZ / przyszłość („powinieneś”)',
+        keywords: ['now', 'It’s a good idea', 'We recommend', 'Ideally'],
+        formula: 'should / shouldn’t + bezokolicznik (V)',
+        exampleEn: 'You should book the course now. / We shouldn’t miss the deadline.',
+        examplePl: 'Powinieneś teraz zarezerwować kurs.',
       },
       {
-        title: '"I should + V" (teraz)  VS  "I should have + V3" (przeszłość!)',
-        formula: 'should / shouldn’t + V (rada teraz)  ≠  should have / shouldn’t have + V3 (powinien był w przeszłości!)',
-        usage:
-          'Jedna z najważniejszych konstrukcji ze screena! Gdy w zdaniu widać, że coś już poszło źle w przeszłości (np. "He failed...", "We lost...", "yesterday", "last week"), używamy "should have + III forma" (powinien był to zrobić) lub "shouldn’t have + III forma" (nie powinien był tego robić).',
-        examples: [
-          'RADA NA TERAZ: We should dedicate more resources to R&D. (powinniśmy teraz przeznaczyć)',
-          'ŻAL / KRYTYKA PRZESZŁOŚCI: He failed to evaluate the risk. He should have done it earlier. (powinien BYŁ to zrobić)',
-          'BŁĄD W PRZESZŁOŚCI: We shouldn’t have ignored the negative feedback last month. (nie powinniśmy BYLI ignorować)',
-          'PODOBNE MODALE PRZESZŁE: could have + V3 (mógł był zrobić), needn’t have + V3 (niepotrzebnie zrobił).',
-        ],
-        watchOut:
-          'Rozpoznaj po pierwszym zdaniu: jeśli pierwsze zdanie jest w czasie przeszłym (failed, lost, forgot, was late, didn’t...), to w 99% przypadków odpowiedź brzmi: should have + V3 lub shouldn’t have + V3!',
+        situation: 'SHOULD HAVE (2) — Krytyka / żal o PRZESZŁOŚĆ („powinien BYŁ to zrobić!”)',
+        keywords: ['He failed...', 'We lost...', 'yesterday', 'last week'],
+        formula: 'should have + V3  /  shouldn’t have + V3',
+        exampleEn: 'He failed to do research. He should have done it. / You shouldn’t have sent that email yesterday.',
+        examplePl: 'Powinien BYŁ to zrobić. / Nie powinieneś BYŁ wysyłać wczoraj tego maila.',
       },
     ],
+    trapPairs: [
+      {
+        wrong: 'I wish I would have more free time.',
+        right: 'I wish I had more free time.',
+        why: 'Po "I wish I..." NIGDY nie piszemy "would"! O sobie teraz piszemy Past Simple (I wish I had / I wish I were).',
+      },
+      {
+        wrong: 'We lost the contract yesterday. We should prepare better.',
+        right: 'We lost the contract yesterday. We should have prepared better.',
+        why: 'Skoro już straciliśmy kontrakt wczoraj (przeszłość!), to „powinniśmy BYLI” → should have + V3!',
+      },
+    ],
+    rules: [],
     exercises: [
       {
         id: 'wsh-1',
@@ -381,7 +424,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
       },
       {
         id: 'wsh-6',
-        prompt: 'Iwish we ___ those overpriced hotels last summer — the rooms weren’t even spacious.',
+        prompt: 'I wish we ___ those overpriced hotels last summer — the rooms weren’t even spacious.',
         hint: 'NOT / BOOK',
         answers: ["hadn't booked", 'had not booked'],
         explanation: 'Żal dotyczący przeszłości ("last summer") → I wish + Past Perfect: hadn’t booked.',
@@ -394,82 +437,11 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
         explanation: 'Irytacja zachowaniem innej osoby i chęć zmiany → I wish + osoba + would stop.',
       },
       {
-        id: 'wsh-8',
-        prompt: 'I’d rather you ___ better premises for our new branch.',
-        hint: 'RENT',
-        answers: ['rented'],
-        explanation: 'Konstrukcja "I’d rather + inna osoba + Past Simple" (dotyczy teraźniejszości/przyszłości) → rented.',
-      },
-      {
-        id: 'wsh-9',
-        prompt: 'I’d rather ___ straight to the point than waste time.',
-        hint: 'GET (ta sama osoba)',
-        answers: ['get'],
-        explanation: 'Gdy podmiot się nie zmienia ("I’d rather..."), stawiamy czysty bezokolicznik bez "to" → get.',
-      },
-      {
-        id: 'wsh-10',
-        prompt: 'It’s high time our senior management ___ a clear strategy.',
-        hint: 'DEVELOP',
-        answers: ['developed'],
-        explanation: 'Po "It’s (high) time + osoba" zawsze używamy Past Simple → developed.',
-      },
-      {
         id: 'wsh-11',
         prompt: 'If only I ___ how risky that investment was before I signed the papers!',
         hint: 'KNOW',
         answers: ['had known'],
         explanation: '"before I signed" = przeszłość → If only + Past Perfect: had known.',
-      },
-      {
-        id: 'wsh-12',
-        prompt: 'All businesses ___ prioritize the most relevant factors in a PEST analysis. (rada ogólna)',
-        hint: 'SHOULD / MUSTN’T',
-        options: ['should', 'should have', "mustn't"],
-        answers: ['should'],
-        explanation: 'Ogólna rada na teraźniejszość/przyszłość → should (+ bezokolicznik).',
-      },
-      {
-        id: 'wsh-13',
-        prompt: 'Jenny would rather ___ to the Caribbean than the Mediterranean last year. (Karta 2/15 zad. 7.2)',
-        hint: 'GO',
-        answers: ['have gone'],
-        explanation: 'Ten sam podmiot (Jenny) + przeszłość ("last year") → would rather + Perfect bare infinitive: have gone!',
-      },
-      {
-        id: 'wsh-14',
-        prompt: 'Mum would rather I ___ home tonight. (Karta 2/15 zad. 7.7)',
-        hint: 'STAY',
-        answers: ['stayed'],
-        explanation: 'Zmiana podmiotu (Mum → I) + teraźniejszość/przyszłość ("tonight") → Past Simple: stayed.',
-      },
-      {
-        id: 'wsh-15',
-        prompt: 'I’d rather we ___ the bus when we went into town. (Karta 2/15 zad. 7.9)',
-        hint: 'TAKE',
-        answers: ['had taken'],
-        explanation: 'Zmiana podmiotu (I → we) + przeszłość ("when we went into town") → Past Perfect: had taken!',
-      },
-      {
-        id: 'wsh-16',
-        prompt: 'I like eating chocolate, but I love eating ice-cream. → I prefer ___ chocolate. (Karta 2/15 zad. 8.4)',
-        hint: 'PREFER ... TO ...',
-        answers: ['ice-cream to', 'eating ice-cream to', 'eating ice-cream to eating'],
-        explanation: 'Po "prefer X ___ Y" zawsze używamy przyimka "TO" (nigdy "than"!): I prefer (eating) ice-cream to chocolate.',
-      },
-      {
-        id: 'wsh-17',
-        prompt: 'Sally would prefer ___ to a restaurant rather than see a film at the cinema. (Karta 2/15 zad. 10.1)',
-        options: ['to go', 'going', 'go'],
-        answers: ['to go'],
-        explanation: 'Po "would prefer" stawiamy to-infinitive ("to go") + rather than + bare infinitive ("see").',
-      },
-      {
-        id: 'wsh-18',
-        prompt: '"I didn’t go to the party last night." — "___ I." (Karta 2/15 zad. 10.3)',
-        options: ['Neither did', 'So do', 'Nor do'],
-        answers: ['Neither did'],
-        explanation: 'Zdanie przeczące w Past Simple ("didn’t go") → Neither did I (lub Nor did I).',
       },
       {
         id: 'wsh-19',
@@ -487,56 +459,253 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
       },
     ],
   },
+
+  // =========================================================================
+  // 4. I'D RATHER, PREFER & SO / NEITHER (KARTA 2/15 STR. 67)
+  // =========================================================================
   {
-    id: 'time-clauses-agh',
-    unitTag: 'KOLOS · Konstrukcja #5',
+    id: 'rather-prefer-so-neither',
+    unitTag: 'KOLOS · #4 Karta str. 67',
     isKolosPriority: true,
-    title: '5. Time Clauses (until, as soon as, if, unless, when, before, after, by the time)',
-    subtitle: 'Złota zasada ze screena: po spójnikach czasu i warunku NIGDY nie stawiamy "will"!',
-    rules: [
+    title: '4. "I’d rather", "prefer" oraz "So do I / Neither do I" (Karta str. 67)',
+    subtitle: 'Wszystkie 3 tabelki z Twojej karty pracy 2/15 rozpisane na czynniki pierwsze',
+    quickSteps: [
+      'Przy "I’d rather" najpierw patrz, KTO wykonuje czynność: TA SAMA osoba (She’d rather...) czy INNA osoba (I’d rather YOU / WE / I...).',
+      'Potem sprawdź czas: TERAZ/PRZYSZŁOŚĆ (tonight, tomorrow) czy PRZESZŁOŚĆ (last year, last night, when we went...).',
+      'Przy "prefer": zawsze łączymy dwie rzeczy słówkiem "TO" (prefer X TO Y), nigdy "than"!',
+    ],
+    tableHeaders: ['Konstrukcja i przypadek', 'Wzór (co wpisujesz)', 'Przykład z karty pracy (str. 67)'],
+    tableRows: [
       {
-        title: 'Złota zasada zdań czasowych (Future Time Clauses)',
-        formula: 'until / as soon as / when / before / after / once / by the time / the moment + PRESENT SIMPLE (lub Present Perfect)',
-        usage:
-          'Mimo że po polsku mówimy w czasie przyszłym („Zadzwonię, jak tylko dotrę” / „Nie podpiszemy, dopóki prawnik nie sprawdzi”), po angielsku bezpośrednio po spójniku czasu (until, as soon as, when, before, after, once, by the time) oraz warunku (if, unless, provided that, in case) panuje całkowity ZAKAZ używania "will"! "Will" stoi wyłącznie w drugiej części zdania (zdaniu głównym).',
-        examples: [
-          'I will brief you as soon as I arrive at the office. (NIE: as soon as I will arrive)',
-          'We won’t launch the product until we carry out a survey. (NIE: until we will carry out)',
-          'Please check the figures before you send the report. (NIE: before you will send)',
-          'Once we get back on track, our profit margin will improve. (once = jak tylko / gdy już)',
-        ],
-        watchOut:
-          'Pułapka: po "until" w języku angielskim NIE dajemy podwójnego przeczenia! Mówimy: "Wait until I come back" (po polsku: „Czekaj, aż NIE wrócę”, po angielsku twierdząco: until I come back!).',
+        situation: 'I’d rather — TA SAMA osoba + TERAZ / PRZYSZŁOŚĆ',
+        keywords: ['brak nowej osoby po rather', 'tomorrow', 'teraz'],
+        formula: 'would rather + zwykły czasownik (bez to!)',
+        exampleEn: 'He would rather live in New York. / They’d rather eat fish tomorrow.',
+        examplePl: 'On wolałby mieszkać w Nowym Jorku. / Woleliby zjeść jutro rybę.',
       },
       {
-        title: 'Znaczenie spójników — jak wybrać właściwy w teście?',
-        formula: 'until (dopóki nie / aż do) | as soon as (jak tylko) | unless (chyba że / jeśli nie) | in case (na wypadek gdyby) | by the time (do czasu gdy)',
-        usage:
-          'Na kolokwium pojawiają się dwa typy zadań: 1) odmiana czasownika w nawiasie po spójniku (zawsze Present Simple/Perfect dla przyszłości!), 2) wybór odpowiedniego spójnika z listy.',
-        examples: [
-          'UNTIL (trwanie do momentu zmiany): We will keep negotiating until we resolve the problem.',
-          'AS SOON AS (natychmiastowa reakcja): As soon as the results are ready, I’ll let you know.',
-          'UNLESS (warunek negatywny = if not): You won’t pass unless you study.',
-          'BY THE TIME + Present Simple → Future Perfect: By the time the meeting starts, I will have prepared the outline.',
-          'BY THE TIME + Past Simple → Past Perfect: By the time the police arrived, the thief had escaped.',
-        ],
+        situation: 'I’d rather — TA SAMA osoba + PRZESZŁOŚĆ',
+        keywords: ['brak nowej osoby', 'last year', 'when she was at college'],
+        formula: 'would rather + HAVE + III forma (V3)',
+        exampleEn: 'Jenny would rather have gone to the Caribbean last year. / She’d rather have studied psychology.',
+        examplePl: 'Jenny wolałaby (była) pojechać w zeszłym roku na Karaiby.',
       },
       {
-        title: 'Before / After / Until / As soon as w PRZESZŁOŚCI, z formą -ING oraz stałe zwroty (as soon as possible)',
-        formula: 'After / Until / As soon as + Past Perfect (had + V3) → Past Simple  |  Before / After + V-ing  |  as soon as possible',
-        usage:
-          '1) W przeszłości czynność wcześniejsza po "after / until / as soon as" ma często Past Perfect (had + V3), a po "before / by the time" stoi Past Simple (zaś had + V3 w drugiej części!). 2) Gdy nie ma podmiotu po "before / after", dajemy czasownik z -ing! 3) Zwroty i wtrącenia z kart pracy:',
-        examples: [
-          'PRZESZŁOŚĆ (after + had V3): After she had checked the stock, she went home.',
-          'PRZESZŁOŚĆ (not ... until + had V3): He didn’t leave the office until he had finished the report.',
-          'PRZESZŁOŚĆ (before + Past Simple): The client had already left before we arrived.',
-          'BEZ PODMIOTU (before / after + V-ing!): Before signing the contract, read the fine print. / After graduating, he started work.',
-          'AS SOON AS POSSIBLE (ASAP): Please reply to this email as soon as possible. (= jak najszybciej)',
-          'AS LONG AS (pod warunkiem, że — Karta 3/15 zad. 14): Becoming a flight attendant is a good idea, as long as you are aware of the drawbacks.',
-          'WTRĄCENIA W TEKŚCIE (Karta 3/15 zad. 14): Firstly / To begin with (po pierwsze) → In addition / Furthermore (ponadto) → However (jednakże) → All things considered (biorąc wszystko pod uwagę).',
-        ],
+        situation: 'I’d rather KTOŚ — INNA osoba (you / we / I) + TERAZ / PRZYSZŁOŚĆ',
+        keywords: ['I’d rather you...', 'Mum would rather I...', 'tonight'],
+        formula: 'would rather + OSOBA + Past Simple (V2 / didn’t V)',
+        exampleEn: 'Mum would rather I stayed home tonight. / I’d rather you didn’t do that again.',
+        examplePl: 'Mama wolałaby, żebym został dziś w domu. / Wolałbym, żebyś tego nie robił.',
+      },
+      {
+        situation: 'I’d rather KTOŚ — INNA osoba (you / we) + PRZESZŁOŚĆ',
+        keywords: ['I’d rather we...', 'last night', 'yesterday', 'when we went...'],
+        formula: 'would rather + OSOBA + Past Perfect (had / hadn’t + V3)',
+        exampleEn: 'She’d rather we hadn’t argued last night. / I’d rather we had taken the bus when we went into town.',
+        examplePl: 'Wolałaby, żebyśmy nie pokłócili się wczoraj w nocy.',
+      },
+      {
+        situation: 'PREFER (1) — ogólne: wolę X od Y (rzeczowniki lub -ing)',
+        keywords: ['prefer ... TO ...', 'NIGDY than!'],
+        formula: 'prefer + rzeczownik / V-ing + TO + rzeczownik / V-ing',
+        exampleEn: 'I prefer ice-cream to chocolate. / I prefer seeing films to watching TV.',
+        examplePl: 'Wolę lody od czekolady. / Wolę oglądanie w kinie od oglądania w TV.',
+      },
+      {
+        situation: 'WOULD PREFER (2) — konkretny wybór: wolałbym zrobić X niż Y',
+        keywords: ['would prefer', 'rather than'],
+        formula: 'would prefer + TO V + RATHER THAN + V (bez to!)',
+        exampleEn: 'Sally would prefer to go to a restaurant rather than see a film.',
+        examplePl: 'Sally wolałaby pójść do restauracji niż zobaczyć film.',
+      },
+      {
+        situation: 'SO + operator + I (Ja też! — po zdaniu TWIERDZĄCYM)',
+        keywords: ['love → do', 'went → did', 'am → am', 'would → would'],
+        formula: 'So + (do / did / have / am / will / would / can) + I',
+        exampleEn: '"I love cinema." → "So do I."  |  "I went there yesterday." → "So did I."',
+        examplePl: '„Uwielbiam kino.” → „Ja też.” | „Poszedłem tam wczoraj.” → „Ja też.”',
+      },
+      {
+        situation: 'NEITHER / NOR + operator + I (Ja też nie! — po PRZECZENIU lub NEVER)',
+        keywords: ['didn’t → did', 'haven’t → have', 'couldn’t → could', 'never!'],
+        formula: 'Neither / Nor + operator (twierdzący!) + I',
+        exampleEn: '"I didn’t go." → "Neither did I."  |  "I will never watch it." → "Neither will I."',
+        examplePl: '„Nie poszedłem.” → „Ja też nie.” | „Nigdy tego nie obejrzę.” → „Ja też nie.”',
       },
     ],
+    trapPairs: [
+      {
+        wrong: 'I prefer ice-cream than chocolate.',
+        right: 'I prefer ice-cream to chocolate.',
+        why: 'Po "prefer" NIGDY nie piszemy "than"! Zawsze łączymy przez "TO".',
+      },
+      {
+        wrong: 'I’d rather we took the bus when we went into town.',
+        right: 'I’d rather we had taken the bus when we went into town.',
+        why: '"when we went into town" to przeszłość + zmiana osoby (I → we), więc musi być Past Perfect (had taken)!',
+      },
+    ],
+    rules: [],
+    exercises: [
+      {
+        id: 'rps-1',
+        prompt: 'Jenny would rather ___ to the Caribbean than the Mediterranean last year. (str. 67 zad. 7.2)',
+        hint: 'GO',
+        answers: ['have gone'],
+        explanation: 'Ta sama osoba (Jenny) + przeszłość ("last year") → would rather + have + V3: have gone.',
+      },
+      {
+        id: 'rps-2',
+        prompt: 'She’d rather ___ psychology when she was at college than law. (str. 67 zad. 7.5)',
+        hint: 'STUDY',
+        answers: ['have studied'],
+        explanation: 'Ta sama osoba (She) + przeszłość ("when she was at college") → have studied.',
+      },
+      {
+        id: 'rps-3',
+        prompt: 'Mum would rather I ___ home tonight. (str. 67 zad. 7.7)',
+        hint: 'STAY',
+        answers: ['stayed'],
+        explanation: 'Inna osoba (Mum → I) + teraźniejszość/przyszłość ("tonight") → Past Simple: stayed.',
+      },
+      {
+        id: 'rps-4',
+        prompt: 'She’d rather we ___ in front of George last night. (str. 67 zad. 7.6)',
+        hint: 'NOT / ARGUE',
+        answers: ["hadn't argued", 'had not argued'],
+        explanation: 'Inna osoba (She → we) + przeszłość ("last night") → Past Perfect: hadn’t argued.',
+      },
+      {
+        id: 'rps-5',
+        prompt: 'I’d rather we ___ the bus when we went into town. (str. 67 zad. 7.9)',
+        hint: 'TAKE',
+        answers: ['had taken'],
+        explanation: 'Inna osoba (I → we) + przeszłość ("when we went into town") → Past Perfect: had taken.',
+      },
+      {
+        id: 'rps-6',
+        prompt: 'I’d rather you ___ better premises for our company.',
+        hint: 'RENT',
+        answers: ['rented'],
+        explanation: 'Inna osoba (I → you) + teraz/przyszłość → Past Simple: rented.',
+      },
+      {
+        id: 'rps-7',
+        prompt: 'He’d rather ___ the match on TV later on this afternoon. (str. 67 zad. 7.8)',
+        hint: 'WATCH',
+        answers: ['watch'],
+        explanation: 'Ta sama osoba (He) + dziś po południu → zwykły bezokolicznik bez "to": watch.',
+      },
+      {
+        id: 'rps-8',
+        prompt: 'I like eating chocolate, but I love eating ice-cream. → I prefer ___ chocolate. (str. 67 zad. 8.4)',
+        hint: 'ICE-CREAM / TO',
+        answers: ['ice-cream to', 'eating ice-cream to', 'eating ice-cream to eating'],
+        explanation: 'Konstrukcja: prefer X TO Y → I prefer (eating) ice-cream to chocolate.',
+      },
+      {
+        id: 'rps-9',
+        prompt: 'Sally would prefer ___ to a restaurant rather than see a film. (str. 67 zad. 10.1)',
+        options: ['to go', 'going', 'go'],
+        answers: ['to go'],
+        explanation: 'Po "would prefer" zawsze stawiamy "to + bezokolicznik" → to go.',
+      },
+      {
+        id: 'rps-10',
+        prompt: '"I didn’t go to the party last night." — "___ I." (str. 67 zad. 10.3)',
+        options: ['Neither did', 'So do', 'Nor do'],
+        answers: ['Neither did'],
+        explanation: 'Przeczenie w Past Simple ("didn’t go") → Neither did I.',
+      },
+      {
+        id: 'rps-11',
+        prompt: '"I will never watch another violent film again." — "___ I." (str. 67 zad. 9.6)',
+        options: ['Neither will', 'So will', 'Neither do'],
+        answers: ['Neither will'],
+        explanation: 'Słowo "never" czyni zdanie przeczącym + operator "will" → Neither will I.',
+      },
+      {
+        id: 'rps-12',
+        prompt: 'It’s high time our senior management ___ a clear strategy.',
+        hint: 'DEVELOP',
+        answers: ['developed'],
+        explanation: 'Po "It’s (high) time + osoba" zawsze wpisujemy Past Simple → developed.',
+      },
+    ],
+  },
+
+  // =========================================================================
+  // 5. TIME CLAUSES (UNTIL, BEFORE, AFTER, AS SOON AS, BY THE TIME)
+  // =========================================================================
+  {
+    id: 'time-clauses-agh',
+    unitTag: 'KOLOS · #5 Until & As soon as',
+    isKolosPriority: true,
+    title: '5. Wtrącenia i Zdania Czasowe (until, before, after, as soon as, by the time)',
+    subtitle: 'Kiedy wpisać Present Simple, kiedy Past Perfect (had + V3), a kiedy końcówkę -ing?',
+    quickSteps: [
+      'Gdy zdanie dotyczy PRZYSZŁOŚCI (w drugiej części jest "will" lub tryb rozkazujący): po until / as soon as / before / after / when / once / unless wpisz PRESENT SIMPLE (nigdy will!).',
+      'Gdy zdanie dotyczy PRZESZŁOŚCI (w drugiej części jest Past Simple, np. didn’t leave / went): po after / until / as soon as wpisz PAST PERFECT (had + V3).',
+      'Gdy zaraz po "before" lub "after" NIE MA osoby (podmiotu) → wpisz czasownik z końcówką -ING (np. Before signing...).',
+    ],
+    tableHeaders: ['Przypadek / Spójnik w zdaniu', 'Wzór (co wpisujesz po spójniku)', 'Przykład'],
+    tableRows: [
+      {
+        situation: '1. O PRZYSZŁOŚCI: po until, as soon as, before, after, when, once, unless, as long as',
+        keywords: ['w drugiej części jest WILL', 'lub rozkaz (Please check...)'],
+        formula: 'Present Simple (V / V-s) — ZAKAZ "will"!',
+        exampleEn: 'I will call you as soon as I arrive. / We won’t start until he arrives.',
+        examplePl: 'Zadzwonię, jak tylko dotrę. / Nie zaczniemy, dopóki on nie przyjedzie.',
+      },
+      {
+        situation: '2. BY THE TIME + Przyszłość (do czasu aż coś nastąpi, coś innego będzie już gotowe)',
+        keywords: ['By the time + Present Simple (opens / arrives)'],
+        formula: 'w drugiej części: Future Perfect (will have + V3)',
+        exampleEn: 'By the time the factory opens, rivals will have entered the market.',
+        examplePl: 'Zanim fabryka się otworzy, rywale wejdą już na rynek.',
+      },
+      {
+        situation: '3. O PRZESZŁOŚCI: po after, until, as soon as (czynność wcześniejsza!)',
+        keywords: ['yesterday', 'didn’t leave until...', 'After she..., she went'],
+        formula: 'Past Perfect (had + V3)',
+        exampleEn: 'He didn’t leave yesterday until he had finished the report.',
+        examplePl: 'Nie wyszedł wczoraj z biura, dopóki (wcześniej) nie skończył raportu.',
+      },
+      {
+        situation: '4. O PRZESZŁOŚCI: po before / by the time (czynność późniejsza!)',
+        keywords: ['Before / By the time we arrived...'],
+        formula: 'po before: Past Simple (V2)  →  w drugim zdaniu: had + V3',
+        exampleEn: 'The client had already left before / by the time we arrived.',
+        examplePl: 'Klient już wyszedł, zanim dotarliśmy.',
+      },
+      {
+        situation: '5. BRAK OSOBY po "before" lub "after"',
+        keywords: ['Before ___ the contract...', 'After ___ college...'],
+        formula: 'Before / After + V-ing',
+        exampleEn: 'Before making a bid, evaluate the risk. / After graduating, she found a job.',
+        examplePl: 'Przed złożeniem oferty oceń ryzyko. / Po ukończeniu studiów znalazła pracę.',
+      },
+      {
+        situation: '6. Stałe wtrącenia na kolosa (as soon as possible, as long as, łączniki z karty 3/15)',
+        keywords: ['as soon as possible', 'as long as', 'Firstly / Furthermore / However'],
+        formula: 'as soon as possible (ASAP)  |  as long as (= pod warunkiem, że)',
+        exampleEn: 'Reply as soon as possible. / It’s a good idea, as long as you know the drawbacks.',
+        examplePl: 'Odpowiedz jak najszybciej. / To dobry pomysł, o ile znasz wady.',
+      },
+    ],
+    trapPairs: [
+      {
+        wrong: 'I will email you as soon as I will get the figures.',
+        right: 'I will email you as soon as I get the figures.',
+        why: 'Bezpośrednio po "as soon as / until / before / after / when" NIGDY nie wolno wpisać "will"!',
+      },
+      {
+        wrong: 'We won’t start until the manager doesn’t arrive.',
+        right: 'We won’t start until the manager arrives.',
+        why: 'Po "until" po angielsku NIE dajemy przeczenia (mimo że po polsku mówimy „dopóki NIE przyjdzie”)!',
+      },
+    ],
+    rules: [],
     exercises: [
       {
         id: 'tc-1',
@@ -645,49 +814,72 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
       },
     ],
   },
+
+  // =========================================================================
+  // 6. UNIT 4.2: MODAL VERBS
+  // =========================================================================
   {
     id: 'modal-verbs-u4',
     unitTag: 'Unit 4.2 · KOLOS',
     isKolosPriority: true,
-    title: '6. Unit 4.2: Modal Verbs (must, have to, mustn’t, don’t have to, should)',
-    subtitle: 'Obowiązek, zakaz, brak konieczności i rekomendacje z rozdziału 4.2',
-    rules: [
+    title: '6. Unit 4.2: Modal Verbs (must, have to, mustn’t vs don’t have to, should)',
+    subtitle: 'Najważniejsze na kolosie: odróżnij ZAKAZ (mustn’t) od BRAKU KONIECZNOŚCI (don’t have to)',
+    quickSteps: [
+      'Widzisz w zdaniu "It’s not allowed / forbidden" (nie wolno!) → wpisz MUSTN’T.',
+      'Widzisz "if you don’t want to / It’s not necessary" (nie musisz) → wpisz DON’T HAVE TO.',
+      'Widzisz "It’s a good idea / We recommend / Ideally" (rada) → wpisz SHOULD / SHOULDN’T.',
+    ],
+    tableHeaders: ['Znaczenie i słowa-klucze w zdaniu', 'Jaki modal wpisujesz?', 'Przykład z Unit 4.2 (str. 41 i 107)'],
+    tableRows: [
       {
-        title: 'Obowiązek i konieczność: have to vs must (oraz had to / will have to)',
-        formula: 'have to / must + bezokolicznik  |  Przeszłość: had to  |  Przyszłość: will have to',
-        usage:
-          'Oba wyrażają konieczność. "have to" częściej dla zasad zewnętrznych (prawo, podatki, regulamin firmy), "must" dla silnych zaleceń i wewnętrznego obowiązku.',
-        examples: [
-          'Companies have to pay 20% corporate tax in the UK.',
-          'I must get to work early every day — it’s when I get my best work done.',
-          'In the future, companies will have to change plans more frequently.',
-        ],
-        watchOut:
-          '"must" NIE MA czasu przeszłego ani przyszłego! W przeszłości zawsze używamy "had to", a w przyszłości "will have to".',
+        situation: 'Obowiązek prawny / regulaminowy (teraz)',
+        keywords: ['regulations state', 'corporate tax', 'at all times'],
+        formula: 'must / have to (has to) + V',
+        exampleEn: 'Everyone must wear hard hats. / Companies have to pay 20% tax.',
+        examplePl: 'Każdy musi nosić kask. / Firmy muszą płacić 20% podatku.',
       },
       {
-        title: 'Zakaz vs Brak konieczności: mustn’t vs don’t have to',
-        formula: 'mustn’t (NIE WOLNO / ZAKAZ)  ≠  don’t have to (NIE MUSISZ / BRAK KONIECZNOŚCI)',
-        usage:
-          'Ulubiona pułapka z Unit 4.2! "mustn’t" oznacza bezwzględny zakaz (It’s not allowed / forbidden), natomiast "don’t have to" / "doesn’t have to" oznacza brak obowiązku (It’s not necessary — możesz, ale nie musisz).',
-        examples: [
-          'You mustn’t smoke anywhere in the building. (Zakaz!)',
-          'Staff mustn’t talk about company strategy in public.',
-          'You don’t have to work late tonight if you don’t want to. (Nie musisz)',
-          'In a PEST analysis, you don’t have to look at all factors — only the relevant ones.',
-        ],
-        watchOut: 'Widzisz „It’s not allowed / prohibited” → mustn’t. Widzisz „It’s not necessary / if you don’t want to” → don’t have to.',
+        situation: 'Obowiązek w PRZYSZŁOŚCI lub PRZESZŁOŚCI ("must" nie ma tych form!)',
+        keywords: ['In the future', 'will be obliged to', 'last year'],
+        formula: 'Przyszłość: will have to + V  |  Przeszłość: had to + V',
+        exampleEn: 'In the future, companies will have to change plans more frequently.',
+        examplePl: 'W przyszłości firmy będą musiały częściej zmieniać plany.',
       },
       {
-        title: 'Rada i rekomendacja: should / shouldn’t',
-        formula: 'should / shouldn’t + bezokolicznik (teraz) | should have + V3 (przeszłość)',
-        usage: 'Służy do dawania rad, sugestii i opinii eksperckich (It’s a good idea / We recommend / Ideally).',
-        examples: [
-          'All businesses should have a social media strategy, according to experts.',
-          'Companies shouldn’t leave strategic planning to senior managers only.',
-        ],
+        situation: 'ZAKAZ (NIE WOLNO tego robić!)',
+        keywords: ['It’s not allowed', 'prohibited', 'against the rules'],
+        formula: 'mustn’t + bezokolicznik',
+        exampleEn: 'You mustn’t eat or drink at your desk. It’s not allowed.',
+        examplePl: 'Nie wolno jeść ani pić przy biurku. To zabronione.',
+      },
+      {
+        situation: 'BRAK KONIECZNOŚCI (NIE MUSISZ — możesz, jeśli chcesz)',
+        keywords: ['if you don’t want to', 'It’s not necessary'],
+        formula: 'don’t have to / doesn’t have to + V',
+        exampleEn: 'You don’t have to work late tonight if you don’t want to.',
+        examplePl: 'Nie musisz dziś pracować do późna, jeśli nie chcesz.',
+      },
+      {
+        situation: 'RADA / REKOMENDACJA (dobry lub zły pomysł)',
+        keywords: ['It’s a good idea', 'We recommend', 'Ideally', 'It’s not a good idea'],
+        formula: 'should / shouldn’t + bezokolicznik',
+        exampleEn: 'Ideally, you should clean it every two weeks. / We shouldn’t miss the deadline.',
+        examplePl: 'Najlepiej powinieneś czyścić to co dwa tygodnie.',
       },
     ],
+    trapPairs: [
+      {
+        wrong: 'You mustn’t work late if you don’t want to.',
+        right: 'You don’t have to work late if you don’t want to.',
+        why: '"mustn’t" to zakaz („zakazuję Ci pracować”), a „nie musisz” to zawsze "don’t have to"!',
+      },
+      {
+        wrong: 'In the future, companies will must change plans.',
+        right: 'In the future, companies will have to change plans.',
+        why: 'Po "will" nigdy nie wolno postawić "must" — używamy zamiennika "will have to"!',
+      },
+    ],
+    rules: [],
     exercises: [
       {
         id: 'mv-1',
@@ -745,46 +937,79 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
       },
     ],
   },
+
+  // =========================================================================
+  // 7. UNIT 4.5: COMPARISON & LINKING (DUE TO, RESULT IN, FEWER VS LESS)
+  // =========================================================================
   {
     id: 'comparison-u4',
     unitTag: 'Unit 4.5 · KOLOS',
     isKolosPriority: true,
-    title: '7. Unit 4.5: Comparison & Linking (due to, result in, fewer vs less)',
-    subtitle: 'Stopniowanie, wzmacnianie (far/much), fewer vs less oraz łączniki przyczyny i skutku',
-    rules: [
+    title: '7. Unit 4.5: Łączniki (due to, result in) & Porównania (fewer vs less, far more)',
+    subtitle: 'Prosty test: sprawdź, czy po luce stoi sam RZECZOWNIK, pełne ZDANIE, czy BEZOKOLICZNIK',
+    quickSteps: [
+      'Patrz co stoi PO LUCE: jeśli sam rzeczownik (np. poor quality / high costs) → przyczyna to DUE TO / BECAUSE OF / AS A RESULT OF, a skutek to LED TO / RESULTED IN.',
+      'Jeśli po luce stoi pełne zdanie z czasownikiem (np. there was a competitor) → przyczyna to BECAUSE, a skutek to SO / THEREFORE.',
+      'Przy porównaniach rzeczowników: policzalne (stores, people, checkouts) = FEWER; niepoliczalne (money, time) = LESS.',
+    ],
+    tableHeaders: ['Co chcesz wyrazić i co stoi po luce?', 'Co wpisujesz w lukę?', 'Przykład z Unit 4.5 (str. 46 i 107)'],
+    tableRows: [
       {
-        title: 'Stopień wyższy, not as ... as oraz wzmacnianie porównań',
-        formula: 'much / far / considerably / slightly / a bit + (-er / more ...) + than  |  not as + adj + as',
-        usage:
-          'Przed stopniem wyższym używamy "far / much / considerably" (znacznie) lub "slightly / a bit" (trochę) — NIGDY "very"! Przy krótkich przymiotnikach na -y zmieniamy -y na -ier (wealthy → wealthier, noisy → noisier, risky → riskier).',
-        examples: [
-          'We wouldn’t go, even if prices were much lower.',
-          'The launch was far more difficult than we expected.',
-          'The HR department is not as noisy as Sales.',
-          'Customers have to wait longer and longer at staffed checkouts.',
-        ],
+        situation: 'PRZYCZYNA + sam rzeczownik / V-ing (brak czasownika!)',
+        keywords: ['... poor product quality', '... high costs', '... the recession'],
+        formula: 'due to / because of / as a result of + RZECZOWNIK',
+        exampleEn: 'Sales fell due to / as a result of poor product quality.',
+        examplePl: 'Sprzedaż spadła z powodu niskiej jakości produktu.',
       },
       {
-        title: 'Porównywanie rzeczowników: fewer vs less',
-        formula: 'fewer / not as many + POLICZALNE (l.mn.)  |  less / not as much + NIEPOLICZALNE (l.poj.)',
-        usage: 'Kluczowe rozróżnienie z Unit 4.5 (str. 46 i 121).',
-        examples: [
-          'The company wanted fewer out-of-town stores and fewer staff members. (stores, members = policzalne)',
-          'This year customers spent less money and had less time. (money, time = niepoliczalne)',
-        ],
-        watchOut: 'Nigdy nie pisz "less stores / less customers / less problems" — zawsze "fewer"!',
+        situation: 'PRZYCZYNA + pełne zdanie (podmiot + czasownik)',
+        keywords: ['... there was a rival', '... prices were too high'],
+        formula: 'because + PODMIOT + CZASOWNIK',
+        exampleEn: 'Sales have fallen because there was a new competitor.',
+        examplePl: 'Sprzedaż spadła, ponieważ pojawił się nowy konkurent.',
       },
       {
-        title: 'Unit 4.5: Przyczyna, skutek i cel (due to vs because, lead to / result in)',
-        formula: 'due to / because of / as a result of + RZECZOWNIK/-ing  |  because / so / Therefore + ZDANIE  |  lead to / result in + RZECZOWNIK/-ing',
-        usage: 'Sprawdź, co stoi po luce: jeśli sama fraza rzeczownikowa (np. "high costs", "the recession", "lack of competence") → due to / because of / result in. Jeśli podmiot + czasownik → because / so.',
-        examples: [
-          'Sales fell due to / because of / as a result of poor product quality.',
-          'Poor product quality has led to / has resulted in negative feedback.',
-          'The product was redesigned in order to attract potential customers.',
-        ],
+        situation: 'SKUTEK + sam rzeczownik / V-ing',
+        keywords: ['... unhappy customers', '... production problems'],
+        formula: 'has led to / has resulted in / resulting in + RZECZOWNIK',
+        exampleEn: 'Poor quality has led to / has resulted in unhappy customers.',
+        examplePl: 'Niska jakość doprowadziła do niezadowolenia klientów.',
+      },
+      {
+        situation: 'CEL + bezokolicznik („aby coś zrobić”)',
+        keywords: ['... attract new customers', '... save money'],
+        formula: 'in order to + bezokolicznik',
+        exampleEn: 'The product was redesigned in order to attract new customers.',
+        examplePl: 'Produkt przeprojektowano, aby przyciągnąć nowych klientów.',
+      },
+      {
+        situation: 'MNIEJ: rzeczowniki policzalne (-s) vs niepoliczalne',
+        keywords: ['policzalne: stores, clients, checkouts', 'niepoliczalne: money, time'],
+        formula: 'fewer + policzalne (l.mn.)  |  less + niepoliczalne (l.poj.)',
+        exampleEn: 'There are fewer stores open. / Customers spent less money.',
+        examplePl: 'Otwartych jest mniej sklepów. / Klienci wydali mniej pieniędzy.',
+      },
+      {
+        situation: 'WZMACNIANIE stopnia wyższego („znacznie trudniejszy / trochę niższy”)',
+        keywords: ['przed: more difficult / lower / bigger'],
+        formula: 'far / much / considerably / slightly + stopień wyższy + than',
+        exampleEn: 'The launch was far more difficult than we expected.',
+        examplePl: 'Wdrożenie było znacznie trudniejsze niż oczekiwaliśmy.',
       },
     ],
+    trapPairs: [
+      {
+        wrong: 'The launch was very more difficult than expected.',
+        right: 'The launch was far / much more difficult than expected.',
+        why: 'Przed stopniem wyższym (more... / -er) NIGDY nie wolno postawić "very"! Używamy "far" lub "much".',
+      },
+      {
+        wrong: 'Sales fell because poor product quality.',
+        right: 'Sales fell due to / because of poor product quality.',
+        why: 'Gdy po luce nie ma czasownika (sama fraza rzeczownikowa), musimy użyć "due to" lub "because of"!',
+      },
+    ],
+    rules: [],
     exercises: [
       {
         id: 'cmp-1',
@@ -842,36 +1067,58 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
       },
     ],
   },
+
+  // =========================================================================
+  // POZOSTAŁE DZIAŁY (UNITS 1–3 & 5)
+  // =========================================================================
   {
     id: 'passive-linking-u5',
     unitTag: 'Unit 5.2 & 5.5',
-    title: 'Passive Forms & Contrast Linking (Despite vs Although)',
-    subtitle: 'Strona bierna (czasy + modale + Present Perfect) oraz łączniki kontrastu',
-    rules: [
+    title: 'Unit 5: Strona Bierna (Passive) & Kontrast (Despite vs Although)',
+    subtitle: 'be + III forma (V3) oraz zasada: Despite + rzeczownik/-ing vs Although + zdanie',
+    tableHeaders: ['Konstrukcja', 'Wzór', 'Przykład'],
+    tableRows: [
       {
-        title: 'Strona bierna we wszystkich czasach i z modalami',
-        formula: 'be (odmienione) + V3  |  has/have + been + V3  |  modal + be + V3',
-        usage: 'Używamy, gdy ważniejszy jest sam proces lub skutek niż wykonawca. Sprawcę dodajemy przez "by".',
-        examples: [
-          'The goods were badly damaged in transit. (Past Simple Passive)',
-          'These goods have already been sent. / Your order hasn’t been fulfilled yet. (Present Perfect Passive)',
-          'Packages must be left in collection lockers. (Modal Passive)',
-        ],
-        watchOut: 'Zwróć uwagę na szyk przysłówków w Present Perfect Passive: have ALREADY/JUST been sent, hasn’t been delivered YET.',
+        situation: 'Past Simple Passive (przeszłość)',
+        formula: 'was / were + III forma (V3)',
+        exampleEn: 'The goods were badly damaged in transit.',
+        examplePl: 'Towary zostały poważnie uszkodzone w transporcie.',
       },
       {
-        title: 'Despite / In spite of vs Although / Even though / Whereas',
-        formula: 'Despite / In spite of + rzeczownik / V-ing  |  Although / Even though + pełne zdanie',
-        usage: 'Najczęstsza pułapka w Unit 5.5 i na egzaminach B2!',
-        examples: [
-          'Although we visited the offices, the manager wasn’t there.',
-          'Despite sending the order in early, delivery was still late.',
-          'In spite of all the problems, we managed to complete the project.',
-          'This supplier offers better quality whereas the other offers better design.',
-        ],
-        watchOut: 'NIGDY nie pisz "Despite of"! Poprawnie: "Despite + rzeczownik/-ing" albo "In spite of + rzeczownik/-ing".',
+        situation: 'Present Perfect Passive (already / yet)',
+        formula: 'have / has + (already) + been + V3',
+        exampleEn: 'A self-driving lorry has already been designed.',
+        examplePl: 'Autonomiczna ciężarówka została już zaprojektowana.',
+      },
+      {
+        situation: 'Modal Passive (can / must / will + be + V3)',
+        formula: 'can / must / will + be + V3',
+        exampleEn: 'A delivery van can be made without pedals.',
+        examplePl: 'Furgonetka dostawcza może zostać wykonana bez pedałów.',
+      },
+      {
+        situation: 'Kontrast + rzeczownik lub -ing (BEZ czasownika)',
+        keywords: ['Despite', 'In spite of'],
+        formula: 'Despite / In spite of + rzeczownik / V-ing',
+        exampleEn: 'Despite sending the order early, delivery was late.',
+        examplePl: 'Pomimo wysłania zamówienia wcześnie, dostawa się spóźniła.',
+      },
+      {
+        situation: 'Kontrast + pełne zdanie (podmiot + czasownik)',
+        keywords: ['Although', 'Even though', 'whereas'],
+        formula: 'Although + PODMIOT + CZASOWNIK',
+        exampleEn: 'Although we visited the offices, the manager wasn’t there.',
+        examplePl: 'Chociaż odwiedziliśmy biura, menedżera tam nie było.',
       },
     ],
+    trapPairs: [
+      {
+        wrong: 'Despite of sending the order early...',
+        right: 'Despite sending the order early... (LUB In spite of sending...)',
+        why: 'Po "Despite" NIGDY nie piszemy słówka "of"!',
+      },
+    ],
+    rules: [],
     exercises: [
       {
         id: 'u5g-1',
@@ -913,30 +1160,30 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
   {
     id: 'future-present-u1',
     unitTag: 'Unit 1.2 & 1.5',
-    title: 'Future Forms & Present Simple vs Continuous',
-    subtitle: 'Harmonogramy, ustalenia, intencje (be going to) i czasowniki statyczne',
-    rules: [
+    title: 'Unit 1: Future Forms & Stative Verbs',
+    subtitle: 'Rozkłady (Present Simple), umówione spotkania (Present Continuous) i zamiary (going to)',
+    tableHeaders: ['Sytuacja w przyszłości', 'Wzór', 'Przykład'],
+    tableRows: [
       {
-        title: 'Wyrażanie przyszłości (Unit 1.2, str. 118)',
-        formula: 'Present Simple (rozkład) | Present Continuous (umówione spotkanie) | be going to (intencja / przewidywanie)',
-        usage: 'Różnica zależy od tego, czy to sztywny grafik, spotkanie z kimś, czy osobisty plan/przewidywanie.',
-        examples: [
-          'Our train doesn’t leave until 8.30 this evening. (rozkład)',
-          'I’m visiting the suppliers tomorrow. (umówione spotkanie)',
-          'He’s decided he’s going to ask for a pay rise. (intencja)',
-          'I’m sure I’m going to get a warning from the boss. (przewidywanie)',
-        ],
+        situation: 'Sztywny rozkład jazdy / grafik / godziny otwarcia',
+        formula: 'Present Simple (opens / leaves / finishes)',
+        exampleEn: 'The office opens at 10 o’clock on Fridays.',
+        examplePl: 'Biuro otwiera się o 10:00 w piątki.',
       },
       {
-        title: 'Czasowniki statyczne zmieniające znaczenie (Unit 1.5)',
-        formula: 'think / have / see — Simple vs Continuous',
-        usage: 'Czasowniki takie jak believe, know, need, understand, own nie występują w Continuous. Inne zmieniają sens:',
-        examples: [
-          'I think you’ll like it (opinia) vs I’m thinking about the induction day (rozmyślam o tym).',
-          'I see your point (rozumiem) vs I’m seeing him tomorrow (spotykam się z nim).',
-        ],
+        situation: 'Umówione spotkanie z konkretną osobą',
+        formula: 'Present Continuous (am / is / are + V-ing)',
+        exampleEn: 'I’m seeing the new clients later today.',
+        examplePl: 'Spotykam się dziś później z nowymi klientami.',
+      },
+      {
+        situation: 'Osobisty zamiar ("He’s decided") lub oczywiste przewidywanie',
+        formula: 'am / is / are + going to + V',
+        exampleEn: 'He’s decided he’s going to ask for a pay rise.',
+        examplePl: 'Zdecydował, że zamierza poprosić o podwyżkę.',
       },
     ],
+    rules: [],
     exercises: [
       {
         id: 'u1g-1',
@@ -964,31 +1211,36 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
   {
     id: 'gerund-infinitive-u2',
     unitTag: 'Unit 2.5 · AGH B2',
-    title: 'Verbs + -ing vs to-infinitive & Connectors',
-    subtitle: 'involve/suggest/postpone + -ing, decide/manage + to, make sb + do',
-    rules: [
+    title: 'Unit 2: Czasowniki + -ing vs to-infinitive',
+    subtitle: 'involve / suggest / postpone + V-ing  |  decide / manage + to V  |  make sb + V',
+    tableHeaders: ['Grupa czasowników', 'Co stawiamy po nich?', 'Przykład'],
+    tableRows: [
       {
-        title: 'Czasowniki z -ing vs to-infinitive (str. 119)',
-        formula: 'avoid / consider / deny / involve / postpone / risk / suggest + V-ing  |  afford / decide / fail / manage / offer / refuse + to V',
-        usage: 'Bardzo często testowane w części Grammar / Verb Forms na egzaminie AGH.',
-        examples: [
-          'They postponed launching the new product for six months.',
-          'Starting a small company doesn’t necessarily involve taking out a mortgage.',
-          'We look forward to seeing you soon. (przyimek "to" + -ing!)',
-          'Incentives can make employees perform better. (make + osoba + bez "to"!)',
-        ],
-        watchOut: 'Pamiętaj o przyimkach! "apologise for arriving", "look forward to seeing", "succeed in finding" — po przyimku ZAWSZE -ing.',
+        situation: 'involve, suggest, postpone, avoid, consider, risk, mind',
+        formula: '+ czasownik z końcówką -ING',
+        exampleEn: 'He suggests appointing a committee. / Would you mind collating reports?',
+        examplePl: 'On sugeruje powołanie komitetu.',
       },
       {
-        title: 'Zmiana znaczenia: remember / try / stop',
-        formula: 'remember + -ing (wspomnienie) vs remember + to V (obowiązek)',
-        usage: 'Try + to V = próbować (z wysiłkiem); Try + -ing = wypróbować metodę.',
-        examples: [
-          'I remember discussing modern art with you last month. (pamiętam, że rozmawialiśmy)',
-          'Please remember to bring this invitation with you. (pamiętaj, żeby przynieść)',
-        ],
+        situation: 'Po każdym przyimku (in, for, of, look forward to)',
+        formula: '+ czasownik z końcówką -ING',
+        exampleEn: 'We look forward to hearing from you soon.',
+        examplePl: 'Czekamy na wiadomość od Państwa.',
+      },
+      {
+        situation: 'decide, manage, afford, fail, offer, refuse, hope',
+        formula: '+ TO + bezokolicznik',
+        exampleEn: 'We managed to complete the project on time.',
+        examplePl: 'Zdołaliśmy ukończyć projekt na czas.',
+      },
+      {
+        situation: 'make / let + osoba (zmusić / sprawić / pozwolić)',
+        formula: '+ osoba + czysty bezokolicznik BEZ "to"',
+        exampleEn: 'Incentives can make employees perform better.',
+        examplePl: 'Zachęty mogą sprawić, że pracownicy będą osiągać lepsze wyniki.',
       },
     ],
+    rules: [],
     exercises: [
       {
         id: 'gi-1',
@@ -1023,30 +1275,30 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
   {
     id: 'indirect-past-u3',
     unitTag: 'Unit 3.2 & 3.5',
-    title: 'Indirect Questions & Past Simple vs Present Perfect',
-    subtitle: 'Uprzejme pytania na rozmowach o pracę bez inwersji + czasy przeszłe',
-    rules: [
+    title: 'Unit 3: Pytania Pośrednie (Indirect Questions)',
+    subtitle: 'Po "Could you tell me / I’d like to know" szyk jest TWIERDZĄCY (bez do/does/did!)',
+    tableHeaders: ['Typ pytania', 'Wzór pytania pośredniego', 'Przykład'],
+    tableRows: [
       {
-        title: 'Pytania pośrednie (Indirect questions, str. 120)',
-        formula: 'Could you tell me / I’d like to know + (if/whether lub wh-) + PODMIOT + CZASOWNIK',
-        usage: 'W pytaniach pośrednich NIE robimy inwersji i NIE używamy operatorów do/does/did!',
-        examples: [
-          'Could you tell me why you want to work for us? (NIE: why do you want)',
-          'I’d like to know what the starting salary will be. (NIE: will the salary be)',
-          'Can you tell me whether I will need to travel? (pytanie zamknięte → if / whether)',
-        ],
-        watchOut: 'Po "I’d like to know..." stawiamy KROPKĘ (.), a nie znak zapytania (?).',
+        situation: 'Pytanie szczegółowe (where, why, what, who, how)',
+        formula: 'Could you tell me + wh- + OSOBA + CZASOWNIK (bez do/did!)',
+        exampleEn: 'Could you tell me why you want to work for us?',
+        examplePl: 'Czy mógłbyś mi powiedzieć, dlaczego chcesz dla nas pracować?',
       },
       {
-        title: 'Past Simple vs Present Perfect (Unit 3.5)',
-        formula: 'Past Simple (konkretny moment w przeszłości) vs Present Perfect (doświadczenia / związek z teraz)',
-        usage: 'Past Simple: yesterday, last year, in 2022, ago. Present Perfect: just, already, yet, ever, never, recently, since, for.',
-        examples: [
-          'Last year we won the national competition. (zamknięta przeszłość)',
-          'I’ve just completed a management degree. (świeży efekt teraz)',
-        ],
+        situation: 'Pytanie z "will / can / is / are" (brak inwersji!)',
+        formula: 'I’d like to know + wh- + OSOBA + will/is + ...',
+        exampleEn: 'I’d like to know who I will report to.',
+        examplePl: 'Chciałbym wiedzieć, komu będę podlegał.',
+      },
+      {
+        situation: 'Pytanie zamknięte (Czy...? — tak/nie)',
+        formula: 'I’d like to know + IF / WHETHER + OSOBA + CZASOWNIK',
+        exampleEn: 'I’d like to know if / whether you provide any training.',
+        examplePl: 'Chciałbym wiedzieć, czy zapewniacie jakieś szkolenia.',
       },
     ],
+    rules: [],
     exercises: [
       {
         id: 'u3g-1',

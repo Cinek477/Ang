@@ -84,12 +84,30 @@ export interface GrammarRule {
   watchOut?: string;
 }
 
+export interface GrammarTableRow {
+  situation: string;
+  keywords?: string[];
+  formula: string;
+  exampleEn: string;
+  examplePl: string;
+}
+
+export interface GrammarTrapPair {
+  wrong: string;
+  right: string;
+  why: string;
+}
+
 export interface GrammarTopic {
   id: string;
   unitTag: string;
   isKolosPriority?: boolean;
   title: string;
   subtitle: string;
+  quickSteps?: string[];
+  tableHeaders?: [string, string, string];
+  tableRows?: GrammarTableRow[];
+  trapPairs?: GrammarTrapPair[];
   rules: GrammarRule[];
   exercises: GapQuestion[];
 }

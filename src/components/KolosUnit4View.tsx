@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  AlertCircle,
   AlertTriangle,
   BookOpen,
   CheckCircle2,
@@ -30,6 +29,7 @@ import { CUSTOM_LIST_FLASHCARDS } from '../data/customList';
 import type { NounToAdjRow, SRSRecord } from '../data/types';
 import { normalizeAnswer, speakEnglish } from '../utils/storage';
 import { ExerciseList } from './ExerciseList';
+import { GrammarTopicCard } from './GrammarTopicCard';
 import { VocabView } from './VocabView';
 
 interface KolosUnit4ViewProps {
@@ -50,8 +50,11 @@ type ConstructionTopicId =
   | 'all-tenses-mix'
   | 'conditionals-kolos'
   | 'wish-should-have-kolos'
+  | 'rather-prefer-so-neither'
   | 'time-clauses-agh'
   | 'all-mix';
+
+type NtaSubView = 'table' | 'worksheet-5' | 'rules';
 
 function adjMatches(userInput: string, row: NounToAdjRow): boolean {
   const norm = normalizeAnswer(userInput);
@@ -80,6 +83,7 @@ export function KolosUnit4View({
   const [revealedRows, setRevealedRows] = useState<Record<string, boolean>>({});
 
   // Noun -> Adjective table states
+  const [ntaSubView, setNtaSubView] = useState<NtaSubView>('table');
   const [suffixFilter, setSuffixFilter] = useState<'All' | NounToAdjRow['suffixGroup']>('All');
   const [ntaHideAdj, setNtaHideAdj] = useState(false);
   const [ntaRevealed, setNtaRevealed] = useState<Record<string, boolean>>({});
@@ -102,6 +106,7 @@ export function KolosUnit4View({
     'all-tenses-mix',
     'conditionals-kolos',
     'wish-should-have-kolos',
+    'rather-prefer-so-neither',
     'time-clauses-agh',
   ];
 
@@ -301,107 +306,136 @@ export function KolosUnit4View({
           {/* ================= TAB 1: RZECZOWNIK -> PRZYMIOTNIK ================= */}
           {section === 'noun-to-adj' && (
             <div className="space-y-6">
-              {/* Complete Worksheet 5/15 Endings Table (Noun / Adjectival / Verb Endings) */}
-              <div className="rounded-2xl border border-[#C2571A]/30 bg-white p-5 space-y-5">
-                <div>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#C2571A] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
-                    <Table2 className="h-3 w-3" />
-                    Twoja Karta Pracy (str. 5/15) — poprawiona i uzupełniona
-                  </span>
-                  <h3 className="mt-1.5 text-base font-extrabold text-[#18181B]">
-                    NOUN ENDINGS (10) · ADJECTIVAL ENDINGS (13) · VERB ENDINGS (4)
-                  </h3>
-                  <p className="text-xs text-[#5C5C66]">
-                    Uwaga na poprawki z Twojej odręcznej karty: <strong className="text-[#C2571A]">helpful</strong> (jedno „l”!), <strong className="text-[#C2571A]">impressive</strong> (dwa „s”!), <strong className="text-[#C2571A]">delicious</strong> (przez „c”!) oraz <strong className="text-[#C2571A]">logical</strong> (bo „logic” to rzeczownik!).
-                  </p>
+              {/* Sub-switcher inside Noun -> Adjective so the main table is right at the top */}
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E6E4DD] bg-white p-4">
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { id: 'table' as NtaSubView, label: `1. Tabela: Rzeczownik → Przymiotnik (${NOUN_TO_ADJECTIVE_TABLE.length})` },
+                    { id: 'worksheet-5' as NtaSubView, label: '2. Karta Pracy (str. 5/15 — Wszystkie Końcówki)' },
+                    { id: 'rules' as NtaSubView, label: '3. Zasady pisowni (7 grup)' },
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setNtaSubView(item.id)}
+                      className={`rounded-xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+                        ntaSubView === item.id
+                          ? 'bg-[#0D6B48] text-white shadow-2xs'
+                          : 'bg-[#F8F7F4] text-[#5C5C66] hover:bg-[#F0EFE9] hover:text-[#18181B]'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
                 </div>
-
-                {WORKSHEET_ENDINGS_CHEATSHEET.map((group) => (
-                  <div key={group.category} className="space-y-2.5">
-                    <h4 className="font-mono text-xs font-extrabold uppercase tracking-wider text-[#0D6B48] border-b border-[#E6E4DD] pb-1">
-                      {group.category}
-                    </h4>
-                    <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
-                      {group.items.map((item) => (
-                        <div
-                          key={item.ending}
-                          className="rounded-xl border border-[#E6E4DD] bg-[#F8F7F4] p-3 space-y-1.5"
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="rounded bg-[#18181B] px-2 py-0.5 font-mono text-xs font-bold text-white">
-                              {item.ending}
-                            </span>
-                            <span className="text-[11px] font-medium italic text-[#5C5C66]">
-                              {item.meaning}
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap gap-1 pt-0.5">
-                            {item.examples.map((ex) => (
-                              <span
-                                key={ex}
-                                className="rounded border border-[#E6E4DD] bg-white px-2 py-0.5 font-mono text-[11px] font-semibold text-[#0D6B48]"
-                              >
-                                {ex}
-                              </span>
-                            ))}
-                          </div>
-                          {item.trap && (
-                            <p className="mt-1 inline-flex items-center gap-1 rounded bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-800 border border-amber-200">
-                              <AlertTriangle className="h-3 w-3 shrink-0" />
-                              {item.trap}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
               </div>
 
-              {/* Grammar Rules of Adjective Formation */}
-              <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5 space-y-4">
-                <div>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0D6B48] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
-                    <Sparkles className="h-3 w-3" />
-                    Zasady Gramatyczne i Pisownia
-                  </span>
-                  <h3 className="mt-1.5 text-base font-extrabold text-[#18181B]">
-                    Jak tworzymy przymiotniki od rzeczowników (i czasowników)? — 7 grup końcówek z listy
-                  </h3>
-                  <p className="text-xs text-[#5C5C66]">
-                    Wszystkie przykłady poniżej pochodzą bezpośrednio z Twojej listy słówek (np. mountainous areas, spacious rooms, cloudless skies, luxurious, overpriced, uncomfortable, lively, economic recession, profitable, risky).
-                  </p>
-                </div>
+              {/* SUB-VIEW 2: Complete Worksheet 5/15 Endings Table */}
+              {ntaSubView === 'worksheet-5' && (
+                <div className="rounded-2xl border border-[#C2571A]/30 bg-white p-5 space-y-5">
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#C2571A] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
+                      <Table2 className="h-3 w-3" />
+                      Twoja Karta Pracy (str. 5/15) — poprawiona i uzupełniona
+                    </span>
+                    <h3 className="mt-1.5 text-base font-extrabold text-[#18181B]">
+                      NOUN ENDINGS (10) · ADJECTIVAL ENDINGS (13) · VERB ENDINGS (4)
+                    </h3>
+                    <p className="text-xs text-[#5C5C66]">
+                      Uwaga na poprawki z Twojej odręcznej karty: <strong className="text-[#C2571A]">helpful</strong> (jedno „l”!), <strong className="text-[#C2571A]">impressive</strong> (dwa „s”!), <strong className="text-[#C2571A]">delicious</strong> (przez „c”!) oraz <strong className="text-[#C2571A]">logical</strong> (bo „logic” to rzeczownik!).
+                    </p>
+                  </div>
 
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                  {NOUN_TO_ADJ_RULES.map((r) => (
-                    <div
-                      key={r.suffix}
-                      className="rounded-xl border border-[#E6E4DD] bg-[#F8F7F4] p-3.5 space-y-1.5"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="rounded-md bg-[#0D6B48] px-2 py-0.5 font-mono text-xs font-bold text-white">
-                          {r.suffix}
-                        </span>
-                        <span className="text-[11px] font-semibold text-[#5C5C66]">{r.meaning}</span>
-                      </div>
-                      <p className="text-xs text-[#18181B] leading-relaxed">{r.spelling}</p>
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {r.examples.map((ex) => (
-                          <span
-                            key={ex}
-                            className="rounded-md border border-[#E6E4DD] bg-white px-2 py-0.5 font-mono text-[11px] font-semibold text-[#0D6B48]"
+                  {WORKSHEET_ENDINGS_CHEATSHEET.map((group) => (
+                    <div key={group.category} className="space-y-2.5">
+                      <h4 className="font-mono text-xs font-extrabold uppercase tracking-wider text-[#0D6B48] border-b border-[#E6E4DD] pb-1">
+                        {group.category}
+                      </h4>
+                      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+                        {group.items.map((item) => (
+                          <div
+                            key={item.ending}
+                            className="rounded-xl border border-[#E6E4DD] bg-[#F8F7F4] p-3 space-y-1.5"
                           >
-                            {ex}
-                          </span>
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="rounded bg-[#18181B] px-2 py-0.5 font-mono text-xs font-bold text-white">
+                                {item.ending}
+                              </span>
+                              <span className="text-[11px] font-medium italic text-[#5C5C66]">
+                                {item.meaning}
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap gap-1 pt-0.5">
+                              {item.examples.map((ex) => (
+                                <span
+                                  key={ex}
+                                  className="rounded border border-[#E6E4DD] bg-white px-2 py-0.5 font-mono text-[11px] font-semibold text-[#0D6B48]"
+                                >
+                                  {ex}
+                                </span>
+                              ))}
+                            </div>
+                            {item.trap && (
+                              <p className="mt-1 inline-flex items-center gap-1 rounded bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-800 border border-amber-200">
+                                <AlertTriangle className="h-3 w-3 shrink-0" />
+                                {item.trap}
+                              </p>
+                            )}
+                          </div>
                         ))}
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              )}
 
-              {/* Main Noun -> Adjective Table (with Hide & Quiz Write Mode) */}
+              {/* SUB-VIEW 3: Grammar Rules of Adjective Formation */}
+              {ntaSubView === 'rules' && (
+                <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5 space-y-4">
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0D6B48] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
+                      <Sparkles className="h-3 w-3" />
+                      Zasady Gramatyczne i Pisownia
+                    </span>
+                    <h3 className="mt-1.5 text-base font-extrabold text-[#18181B]">
+                      Jak tworzymy przymiotniki od rzeczowników (i czasowników)? — 7 grup końcówek z listy
+                    </h3>
+                    <p className="text-xs text-[#5C5C66]">
+                      Wszystkie przykłady poniżej pochodzą bezpośrednio z Twojej listy słówek (np. mountainous areas, spacious rooms, cloudless skies, luxurious, overpriced, uncomfortable, lively, economic recession, profitable, risky).
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                    {NOUN_TO_ADJ_RULES.map((r) => (
+                      <div
+                        key={r.suffix}
+                        className="rounded-xl border border-[#E6E4DD] bg-[#F8F7F4] p-3.5 space-y-1.5"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="rounded-md bg-[#0D6B48] px-2 py-0.5 font-mono text-xs font-bold text-white">
+                            {r.suffix}
+                          </span>
+                          <span className="text-[11px] font-semibold text-[#5C5C66]">{r.meaning}</span>
+                        </div>
+                        <p className="text-xs text-[#18181B] leading-relaxed">{r.spelling}</p>
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {r.examples.map((ex) => (
+                            <span
+                              key={ex}
+                              className="rounded-md border border-[#E6E4DD] bg-white px-2 py-0.5 font-mono text-[11px] font-semibold text-[#0D6B48]"
+                            >
+                              {ex}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 1 (DEFAULT): Main Noun -> Adjective Table (with Hide & Quiz Write Mode) */}
+              {ntaSubView === 'table' && (
               <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5 space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
@@ -630,6 +664,7 @@ export function KolosUnit4View({
                   </div>
                 )}
               </div>
+              )}
 
               {/* Gap-fill Exercises for Noun -> Adjective */}
               <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5">
@@ -646,54 +681,55 @@ export function KolosUnit4View({
           {/* ================= TAB 2: KONSTRUKCJE GRAMATYCZNE ZE SCREENA ================= */}
           {section === 'kolos-constructions' && (
             <div className="space-y-6">
-              {/* Sub-navigation for the 5 screenshot constructions */}
+              {/* Sub-navigation for the 6 screenshot & worksheet constructions */}
               <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5 space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#C2571A] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
-                      <BookOpen className="h-3 w-3" />
-                      Konstrukcje z wiadomości o kolosie
-                    </span>
-                    <h3 className="mt-1.5 text-lg font-extrabold text-[#18181B]">
-                      Czasy · Conditionale · I wish · I should (have) · Until / As soon as / If
-                    </h3>
-                    <p className="text-xs text-[#5C5C66]">
-                      Wybierz konkretną konstrukcję, żeby przeczytać tabelę z zasadami i rozwiązać zadania, albo włącz losowy Mix wszystkich konstrukcji na dole.
-                    </p>
-                  </div>
+                <div>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#C2571A] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
+                    <BookOpen className="h-3 w-3" />
+                    Konstrukcje z wiadomości o kolosie + Karty Pracy (str. 47 i 67)
+                  </span>
+                  <h3 className="mt-1.5 text-lg font-extrabold text-[#18181B]">
+                    Wybierz konstrukcję — każda ma czytelną tabelę „Co widzisz → Co wpisujesz”
+                  </h3>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   {[
                     {
                       id: 'all-tenses-mix' as ConstructionTopicId,
-                      badge: '1. Były czasy',
-                      label: 'Wszystkie Czasy (Mix)',
-                      desc: 'Present, Past, Perfect, Future',
+                      badge: '1. Czasy',
+                      label: 'Tabela 8 Czasów (Słowa-klucze)',
+                      desc: 'yesterday vs since/for vs had + V3 vs will have + V3',
                     },
                     {
                       id: 'conditionals-kolos' as ConstructionTopicId,
                       badge: '2. Conditionale',
-                      label: 'Tryby Warunkowe 0–III',
-                      desc: '0, I, II, III + Mixed & unless',
+                      label: 'Tryby Warunkowe 0, I, II, III + Mixed',
+                      desc: 'Co po IF, a co w drugim zdaniu + unless / in case',
                     },
                     {
                       id: 'wish-should-have-kolos' as ConstructionTopicId,
                       badge: '3. I wish + I should',
-                      label: 'I wish & should have + V3',
-                      desc: 'Żal (teraz vs przeszłość) i krytyka',
+                      label: 'I wish (teraz vs przeszłość) & should have',
+                      desc: 'I wish + Past Simple / had V3 · should vs should have V3',
+                    },
+                    {
+                      id: 'rather-prefer-so-neither' as ConstructionTopicId,
+                      badge: '4. Karta str. 67',
+                      label: 'I’d rather · prefer TO · So / Neither',
+                      desc: 'Ta sama osoba vs inna osoba · prefer X to Y · So did I',
                     },
                     {
                       id: 'time-clauses-agh' as ConstructionTopicId,
-                      badge: '4. Until, as soon as',
-                      label: 'Time Clauses (bez will!)',
-                      desc: 'until, as soon as, if, unless, by the time',
+                      badge: '5. Wtrącenia czasu',
+                      label: 'until, before, after, as soon as (possible)',
+                      desc: 'Przyszłość (bez will!) vs Przeszłość (had V3) vs -ing',
                     },
                     {
                       id: 'all-mix' as ConstructionTopicId,
-                      badge: 'TEST MIX (15)',
-                      label: 'Losowy Test z Konstrukcji',
-                      desc: 'Wymieszane pytania ze wszystkich 4 grup',
+                      badge: '6. TEST MIX (15)',
+                      label: 'Losowy Test ze Wszystkich Konstrukcji',
+                      desc: '15 wymieszanych zdań jak na prawdziwym kolokwium',
                     },
                   ].map((item) => {
                     const active = activeConstruction === item.id;
@@ -706,7 +742,7 @@ export function KolosUnit4View({
                           setActiveConstruction(item.id);
                           if (isMix) setMixSeed((s) => s + 1);
                         }}
-                        className={`rounded-xl border p-3 text-left transition-all cursor-pointer ${
+                        className={`rounded-xl border p-3.5 text-left transition-all cursor-pointer ${
                           active
                             ? isMix
                               ? 'border-[#C2571A] bg-[#C2571A] text-white shadow-xs'
@@ -717,7 +753,7 @@ export function KolosUnit4View({
                         }`}
                       >
                         <span
-                          className={`inline-block rounded px-1.5 py-0.5 font-mono text-[10px] font-bold ${
+                          className={`inline-block rounded px-2 py-0.5 font-mono text-[10px] font-bold ${
                             active && isMix
                               ? 'bg-white/20 text-white'
                               : isMix
@@ -729,9 +765,9 @@ export function KolosUnit4View({
                         >
                           {item.badge}
                         </span>
-                        <p className="mt-1.5 text-xs font-extrabold">{item.label}</p>
+                        <p className="mt-1.5 text-sm font-extrabold">{item.label}</p>
                         <p
-                          className={`mt-0.5 text-[11px] ${
+                          className={`mt-0.5 text-xs ${
                             active && isMix ? 'text-white/85' : 'text-[#5C5C66]'
                           }`}
                         >
@@ -745,51 +781,13 @@ export function KolosUnit4View({
 
               {activeConstruction !== 'all-mix' && selectedConstructionTopic && (
                 <>
-                  {/* Rules & Formulas */}
-                  <div className="rounded-2xl border border-[#E6E4DD] bg-white p-6 space-y-4">
-                    <div>
-                      <h3 className="text-lg font-extrabold text-[#18181B]">
-                        {selectedConstructionTopic.title}
-                      </h3>
-                      <p className="text-xs text-[#5C5C66]">{selectedConstructionTopic.subtitle}</p>
-                    </div>
-
-                    <div className="space-y-3.5">
-                      {selectedConstructionTopic.rules.map((r) => (
-                        <div
-                          key={r.title}
-                          className="rounded-xl border border-[#E6E4DD] bg-[#F8F7F4] p-4 space-y-2"
-                        >
-                          <div className="flex flex-wrap items-center justify-between gap-2">
-                            <h4 className="font-bold text-[#18181B] text-sm">{r.title}</h4>
-                            <code className="rounded-md bg-white border border-[#E6E4DD] px-2.5 py-1 text-xs font-semibold text-[#0D6B48]">
-                              {r.formula}
-                            </code>
-                          </div>
-                          <p className="text-sm leading-relaxed text-[#5C5C66]">{r.usage}</p>
-                          <ul className="space-y-1 text-sm text-[#18181B] pl-4 list-disc">
-                            {r.examples.map((ex) => (
-                              <li key={ex}>{ex}</li>
-                            ))}
-                          </ul>
-                          {r.watchOut && (
-                            <div className="flex items-start gap-2 rounded-lg bg-amber-50 border border-amber-200 p-2.5 text-xs text-amber-900">
-                              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-amber-700" />
-                              <span>
-                                <strong>Pułapka na kolosie:</strong> {r.watchOut}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <GrammarTopicCard topic={selectedConstructionTopic} />
 
                   {/* Exercises for selected construction */}
                   <div className="rounded-2xl border border-[#E6E4DD] bg-white p-6">
                     <ExerciseList
                       key={selectedConstructionTopic.id}
-                      title={`Ćwiczenia: ${selectedConstructionTopic.title}`}
+                      title={`Ćwiczenia (${selectedConstructionTopic.exercises.length} zdań): ${selectedConstructionTopic.title}`}
                       subtitle="Wpisz poprawną formę lub wybierz odpowiedź. Naciśnij Enter, aby sprawdzić pojedyncze zdanie."
                       questions={selectedConstructionTopic.exercises}
                       onComplete={(c, t) =>
