@@ -90,7 +90,6 @@ function getCaretNodeAndOffset(x: number, y: number): { node: Text; offset: numb
 
 export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
-  const [pos, setPos] = useState<{ left: number; top: number }>({ left: 16, top: 16 });
   const tooltipElRef = useRef<HTMLDivElement>(null);
   const hideTimerRef = useRef<number | null>(null);
   const fetchTimerRef = useRef<number | null>(null);
@@ -132,13 +131,11 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
-      // Keep tooltip visible when hovering inside the tooltip itself
       if (tooltipElRef.current && tooltipElRef.current.contains(target)) {
         clearHideTimer();
         return;
       }
 
-      // Skip inputs, textareas, and top header navigation
       if (target.closest('input, textarea, header, [data-no-translate="true"]')) {
         scheduleHide();
         return;
@@ -156,7 +153,6 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
         return;
       }
 
-      // Tokenize all words in this text node
       const tokens: WordToken[] = [];
       let match: RegExpExecArray | null;
       WORD_REGEX.lastIndex = 0;
@@ -183,7 +179,6 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
 
       const currentToken = tokens[tokenIdx];
 
-      // Verify mouse (e.clientX, e.clientY) is physically inside the bounding box of currentToken
       const wordRange = document.createRange();
       wordRange.setStart(caret.node, currentToken.start);
       wordRange.setEnd(caret.node, currentToken.end);
@@ -205,7 +200,6 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
       const nextWord = tokenIdx + 1 < tokens.length ? tokens[tokenIdx + 1].word : null;
       const nextNextWord = tokenIdx + 2 < tokens.length ? tokens[tokenIdx + 2].word : null;
 
-      // 1. Instant offline lookup (0ms)
       const hit = lookupWordWithContext(
         prevWord,
         currentToken.word,
@@ -228,7 +222,6 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
         return;
       }
 
-      // 2. Fallback for any other English word
       const lowerWord = currentToken.word.toLowerCase();
       if (
         lowerWord.length >= 3 &&
@@ -287,31 +280,37 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
     };
   }, [enabled]);
 
-  // Measure actual rendered tooltip box and clamp strictly inside the visible viewport
+  // Synchronously measure at (0,0) before paint and clamp strictly inside viewport
   useLayoutEffect(() => {
     if (!tooltip || !tooltipElRef.current) return;
     const el = tooltipElRef.current;
-    const tw = el.offsetWidth;
-    const th = el.offsetHeight;
     const vw = document.documentElement.clientWidth || window.innerWidth;
     const vh = document.documentElement.clientHeight || window.innerHeight;
-    const margin = 12;
+    const sideMargin = 14;
+    const topMargin = 72; // below sticky header
+    const bottomMargin = 14;
 
-    // Center horizontally over the word, then clamp to [margin, vw - tw - margin]
+    // Reset to (0,0) before measuring so right-edge wrapping doesn't distort offsetWidth
+    el.style.left = '0px';
+    el.style.top = '0px';
+    el.style.maxWidth = `${Math.min(300, vw - sideMargin * 2)}px`;
+
+    const tw = el.offsetWidth;
+    const th = el.offsetHeight;
+
     let nextLeft = tooltip.rect.left + tooltip.rect.width / 2 - tw / 2;
-    const maxLeft = Math.max(margin, vw - tw - margin);
-    nextLeft = Math.min(maxLeft, Math.max(margin, nextLeft));
+    const maxLeft = Math.max(sideMargin, vw - tw - sideMargin);
+    nextLeft = Math.min(maxLeft, Math.max(sideMargin, nextLeft));
 
-    // Prefer placing above the word; if there isn't enough room above, place below
     let nextTop = tooltip.rect.top - th - 8;
-    if (nextTop < margin) {
+    if (nextTop < topMargin) {
       nextTop = tooltip.rect.bottom + 8;
     }
-    // If placing below would go past bottom edge, clamp to bottom margin
-    const maxTop = Math.max(margin, vh - th - margin);
-    nextTop = Math.min(maxTop, Math.max(margin, nextTop));
+    const maxTop = Math.max(topMargin, vh - th - bottomMargin);
+    nextTop = Math.min(maxTop, Math.max(topMargin, nextTop));
 
-    setPos({ left: Math.round(nextLeft), top: Math.round(nextTop) });
+    el.style.left = `${Math.round(nextLeft)}px`;
+    el.style.top = `${Math.round(nextTop)}px`;
   }, [tooltip]);
 
   if (!enabled || !tooltip) return null;
@@ -320,7 +319,6 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
 
   return (
     <>
-      {/* Subtle underline highlight under the hovered word */}
       <div
         className="pointer-events-none fixed z-40 rounded bg-[#0D6B48]/15 border-b-2 border-[#0D6B48]"
         style={{
@@ -331,14 +329,14 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
         }}
       />
 
-      {/* Floating translation card clamped strictly to viewport */}
       <div
         ref={tooltipElRef}
         data-word-tooltip="true"
-        className="fixed z-50 w-max max-w-[min(320px,calc(100vw-24px))] rounded-xl border border-[#27272A] bg-[#18181B] px-3.5 py-2.5 text-white shadow-xl"
+        className="fixed z-50 w-max rounded-xl border border-[#27272A] bg-[#18181B] px-3.5 py-2.5 text-white shadow-xl"
         style={{
-          left: pos.left,
-          top: pos.top,
+          left: 0,
+          top: 0,
+          maxWidth: '300px',
         }}
       >
         <div className="flex items-center justify-between gap-3">

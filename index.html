@@ -14,5 +14,21 @@
   <body class="bg-[#F8F7F4] text-[#18181B] antialiased selection:bg-[#0D6B48]/15 selection:text-[#0D6B48]">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if (
+        location.hostname !== 'localhost' &&
+        location.hostname !== '127.0.0.1' &&
+        !document.querySelector('script[src*="assets/app.js"]')
+      ) {
+        var l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = './dist/assets/app.css';
+        document.head.appendChild(l);
+        var s = document.createElement('script');
+        s.type = 'module';
+        s.src = './dist/assets/app.js';
+        document.body.appendChild(s);
+      }
+    </script>
   </body>
 </html>

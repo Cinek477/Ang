@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AGH English B2 — Studio Nauki & Kolokwium Unit 4</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="./assets/app.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/app.css">
+  </head>
+  <body class="bg-[#F8F7F4] text-[#18181B] antialiased selection:bg-[#0D6B48]/15 selection:text-[#0D6B48]">
+    <div id="root"></div>
+    <script>
+      if (
+        location.hostname !== 'localhost' &&
+        location.hostname !== '127.0.0.1' &&
+        !document.querySelector('script[src*="assets/app.js"]')
+      ) {
+        var l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = './dist/assets/app.css';
+        document.head.appendChild(l);
+        var s = document.createElement('script');
+        s.type = 'module';
+        s.src = './dist/assets/app.js';
+        document.body.appendChild(s);
+      }
+    </script>
+  </body>
+</html>
