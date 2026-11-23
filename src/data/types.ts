@@ -47,6 +47,26 @@ export interface WordFamilyRow {
   trap?: string;
 }
 
+export interface NounToAdjRow {
+  id: string;
+  base: string;
+  basePl: string;
+  adjective: string;
+  negativeOrOther?: string;
+  suffixGroup:
+    | '-ous / -ious'
+    | '-ful / -less'
+    | '-y'
+    | '-al / -ic'
+    | '-able / -ible'
+    | '-ive'
+    | '-ant / -ent'
+    | '-ing / -ed / -ly';
+  collocation: string;
+  collocationPl: string;
+  rule?: string;
+}
+
 export interface GapQuestion {
   id: string;
   prompt: string;

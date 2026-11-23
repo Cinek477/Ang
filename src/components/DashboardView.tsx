@@ -40,7 +40,7 @@ export function DashboardView({
   scores,
 }: DashboardViewProps) {
   const totalCards = ALL_FLASHCARDS.length;
-  const trickyCount = ALL_FLASHCARDS.filter((c) => c.category === 'Trudne z tekstów').length;
+  const customCount = ALL_FLASHCARDS.filter((c) => c.category === 'Moja lista').length;
   const masteredCards = Object.values(srs).filter((r) => r.level >= 2).length;
   const dueCards = ALL_FLASHCARDS.filter((c) => {
     const rec = srs[c.id];
@@ -59,39 +59,39 @@ export function DashboardView({
 
   return (
     <div className="space-y-6">
-      {/* Priority Banner: Unit 4 Kolos + Trudne z tekstów */}
+      {/* Priority Banner: Unit 4 Kolos + Konstrukcje ze screena */}
       <section className="relative overflow-hidden rounded-2xl border border-[#C2571A]/25 bg-gradient-to-br from-[#FDF2EB] via-white to-[#ECF7F2]/60 p-6 shadow-xs">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-[#C2571A] px-3 py-1 text-xs font-bold tracking-wide text-white">
               <Flame className="h-3.5 w-3.5" />
-              ZAKRES: UNITS 1–5 · PRIORYTET: KOLOS UNIT 4
+              PRIORYTET: KOLOS UNIT 4 + KONSTRUKCJE GRAMATYCZNE
             </div>
             <h2 className="text-2xl font-extrabold tracking-tight text-[#18181B]">
-              Business Partner B1 (Units 1–5) + AGH B2
+              Unit 4: Business Strategy · Słowotwórstwo & Konstrukcje
             </h2>
             <p className="text-sm leading-relaxed text-[#5C5C66]">
-              Masz tu pełne powtórki z <span className="font-semibold text-[#18181B]">Units 1–5</span>,
-              wszystkie działy gramatyki (w tym <span className="font-semibold text-[#18181B]">Modal Verbs, Comparison, Passive, Indirect Questions</span>)
-              oraz specjalny zestaw <span className="font-semibold text-[#C2571A]">{trickyCount} trudnych / nietypowych słówek z tekstów</span> (FT + arkusze AGH).
+              Komplet pod kolokwium: tabela <span className="font-semibold text-[#18181B]">Rzeczownik → Przymiotnik + Karta Końcówek (5/15)</span>,
+              konstrukcje gramatyczne (<span className="font-semibold text-[#18181B]">Czasy, Conditionale 0–III, I wish / I’d rather, I should have + V3, until / before / after / as soon as</span>),
+              a także <span className="font-semibold text-[#18181B]">Word Building U4, Kolokacje, PEST, Modale</span> oraz <span className="font-semibold text-[#C2571A]">{customCount} słówek z Twojej listy</span>.
             </p>
           </div>
           <div className="flex shrink-0 flex-col sm:flex-row gap-2.5">
             <button
               type="button"
               onClick={() => onOpenUnit(4)}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#C2571A] px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-[#A64813] transition-colors cursor-pointer"
+              className="inline-flex whitespace-nowrap items-center justify-center gap-2 rounded-xl bg-[#C2571A] px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-[#A64813] transition-colors cursor-pointer"
             >
               Kolos: Unit 4
               <ArrowRight className="h-4 w-4" />
             </button>
             <button
               type="button"
-              onClick={() => onOpenVocabCategory('Trudne z tekstów')}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#C2571A]/35 bg-white px-4 py-3 text-sm font-bold text-[#C2571A] hover:bg-[#FDF2EB] transition-colors cursor-pointer"
+              onClick={() => onOpenVocabCategory('Moja lista')}
+              className="inline-flex whitespace-nowrap items-center justify-center gap-2 rounded-xl border border-[#C2571A]/35 bg-white px-4 py-3 text-sm font-bold text-[#C2571A] hover:bg-[#FDF2EB] transition-colors cursor-pointer"
             >
               <Sparkles className="h-4 w-4" />
-              Trudne z tekstów ({trickyCount})
+              Moja lista ({customCount})
             </button>
           </div>
         </div>

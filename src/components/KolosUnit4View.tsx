@@ -1,17 +1,34 @@
-import { useEffect, useState } from 'react';
-import { AlertTriangle, CheckCircle2, Eye, EyeOff, Flame, Volume2 } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import {
+  AlertCircle,
+  AlertTriangle,
+  BookOpen,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Flame,
+  RotateCcw,
+  Shuffle,
+  Sparkles,
+  Table2,
+  Volume2,
+} from 'lucide-react';
+import {
+  NOUN_TO_ADJECTIVE_TABLE,
+  NOUN_TO_ADJ_EXERCISES,
+  NOUN_TO_ADJ_RULES,
   PEST_CHEATSHEET,
   UNIT4_REVIEW_COLLOCATIONS,
   UNIT4_REVIEW_REPORTING,
   UNIT4_REVIEW_WORD_BUILDING,
   UNIT4_WORD_BUILDING,
+  WORKSHEET_ENDINGS_CHEATSHEET,
 } from '../data/unit4';
 import { OTHER_UNITS_REVIEWS } from '../data/unitsReview';
 import { GRAMMAR_TOPICS } from '../data/grammar';
 import { CUSTOM_LIST_FLASHCARDS } from '../data/customList';
-import type { SRSRecord } from '../data/types';
-import { speakEnglish } from '../utils/storage';
+import type { NounToAdjRow, SRSRecord } from '../data/types';
+import { normalizeAnswer, speakEnglish } from '../utils/storage';
 import { ExerciseList } from './ExerciseList';
 import { VocabView } from './VocabView';
 
@@ -22,7 +39,32 @@ interface KolosUnit4ViewProps {
   initialUnit?: 1 | 2 | 3 | 4 | 5;
 }
 
-type KolosSection = 'flashcards' | 'word-building' | 'collocations' | 'pest-modals' | 'reporting';
+type KolosSection =
+  | 'flashcards'
+  | 'noun-to-adj'
+  | 'word-building'
+  | 'kolos-constructions'
+  | 'u4-business';
+
+type ConstructionTopicId =
+  | 'all-tenses-mix'
+  | 'conditionals-kolos'
+  | 'wish-should-have-kolos'
+  | 'time-clauses-agh'
+  | 'all-mix';
+
+function adjMatches(userInput: string, row: NounToAdjRow): boolean {
+  const norm = normalizeAnswer(userInput);
+  if (!norm) return false;
+  const rawCandidates = [
+    ...row.adjective.split('/'),
+    ...(row.negativeOrOther ? row.negativeOrOther.replace(/\(.*?\)/g, '').split('/') : []),
+  ];
+  const accepted = rawCandidates.map((s) => normalizeAnswer(s)).filter(Boolean);
+  if (accepted.includes('colourful')) accepted.push('colorful');
+  if (accepted.includes('recognizable')) accepted.push('recognisable');
+  return accepted.includes(norm);
+}
 
 export function KolosUnit4View({
   onScoreSave,
@@ -31,15 +73,73 @@ export function KolosUnit4View({
   initialUnit = 4,
 }: KolosUnit4ViewProps) {
   const [activeUnit, setActiveUnit] = useState<1 | 2 | 3 | 4 | 5>(initialUnit);
-  const [section, setSection] = useState<KolosSection>('flashcards');
+  const [section, setSection] = useState<KolosSection>('noun-to-adj');
+
+  // Word building U4 states
   const [quizMode, setQuizMode] = useState(false);
   const [revealedRows, setRevealedRows] = useState<Record<string, boolean>>({});
+
+  // Noun -> Adjective table states
+  const [suffixFilter, setSuffixFilter] = useState<'All' | NounToAdjRow['suffixGroup']>('All');
+  const [ntaHideAdj, setNtaHideAdj] = useState(false);
+  const [ntaRevealed, setNtaRevealed] = useState<Record<string, boolean>>({});
+  const [ntaWriteMode, setNtaWriteMode] = useState(false);
+  const [ntaInputs, setNtaInputs] = useState<Record<string, string>>({});
+  const [ntaChecked, setNtaChecked] = useState(false);
+
+  // Constructions tab state
+  const [activeConstruction, setActiveConstruction] = useState<ConstructionTopicId>('all-tenses-mix');
+  const [mixSeed, setMixSeed] = useState(1);
 
   useEffect(() => {
     setActiveUnit(initialUnit);
   }, [initialUnit]);
 
   const modalTopic = GRAMMAR_TOPICS.find((t) => t.id === 'modal-verbs-u4')!;
+  const comparisonTopic = GRAMMAR_TOPICS.find((t) => t.id === 'comparison-u4')!;
+
+  const constructionTopicIds: Exclude<ConstructionTopicId, 'all-mix'>[] = [
+    'all-tenses-mix',
+    'conditionals-kolos',
+    'wish-should-have-kolos',
+    'time-clauses-agh',
+  ];
+
+  const constructionTopics = useMemo(
+    () =>
+      constructionTopicIds
+        .map((id) => GRAMMAR_TOPICS.find((t) => t.id === id))
+        .filter((t): t is NonNullable<typeof t> => Boolean(t)),
+    []
+  );
+
+  const selectedConstructionTopic = useMemo(
+    () => constructionTopics.find((t) => t.id === activeConstruction) ?? constructionTopics[0],
+    [activeConstruction, constructionTopics]
+  );
+
+  const mixedConstructionQuestions = useMemo(() => {
+    const all = constructionTopics.flatMap((t) => t.exercises);
+    const copy = [...all];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(((Math.sin(mixSeed * 83 + i * 29) + 1) / 2) * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy.slice(0, 15);
+  }, [constructionTopics, mixSeed]);
+
+  const filteredNounToAdj = useMemo(() => {
+    if (suffixFilter === 'All') return NOUN_TO_ADJECTIVE_TABLE;
+    return NOUN_TO_ADJECTIVE_TABLE.filter((r) => r.suffixGroup === suffixFilter);
+  }, [suffixFilter]);
+
+  const ntaScore = useMemo(() => {
+    let correct = 0;
+    for (const r of filteredNounToAdj) {
+      if (adjMatches(ntaInputs[r.id] ?? '', r)) correct++;
+    }
+    return { correct, total: filteredNounToAdj.length };
+  }, [filteredNounToAdj, ntaInputs]);
 
   const unitTabs: { num: 1 | 2 | 3 | 4 | 5; label: string; isKolos?: boolean }[] = [
     { num: 1, label: 'Unit 1: Organisation' },
@@ -51,17 +151,29 @@ export function KolosUnit4View({
 
   const u4Tabs: { id: KolosSection; label: string; tag: string }[] = [
     { id: 'flashcards', label: `Fiszki z listy (${CUSTOM_LIST_FLASHCARDS.length})`, tag: 'SRS' },
+    { id: 'noun-to-adj', label: `Rzeczownik → Przymiotnik (${NOUN_TO_ADJECTIVE_TABLE.length})`, tag: 'TABELA' },
+    { id: 'kolos-constructions', label: 'Gramatyka na Kolosa', tag: 'TEST' },
     { id: 'word-building', label: 'Word Building (str. 39 & 107)', tag: '4.1' },
-    { id: 'collocations', label: 'Kolokacje biznesowe', tag: '4.1' },
-    { id: 'pest-modals', label: 'PEST + Modal Verbs', tag: '4.2' },
-    { id: 'reporting', label: 'Reasons & Results', tag: '4.5' },
+    { id: 'u4-business', label: 'Kolokacje, PEST, Modale & Linking', tag: '4.1–4.5' },
+  ];
+
+  const suffixGroups: ('All' | NounToAdjRow['suffixGroup'])[] = [
+    'All',
+    '-ous / -ious',
+    '-ful / -less',
+    '-y',
+    '-al / -ic',
+    '-able / -ible',
+    '-ive',
+    '-ant / -ent',
+    '-ing / -ed / -ly',
   ];
 
   const otherBundle = activeUnit !== 4 ? OTHER_UNITS_REVIEWS[activeUnit] : null;
 
   return (
     <div className="space-y-6">
-      {/* Unit 1–5 Switcher */}
+      {/* Unit Switcher */}
       <div className="flex flex-wrap gap-2 rounded-2xl border border-[#E6E4DD] bg-white p-3">
         {unitTabs.map((u) => {
           const active = activeUnit === u.num;
@@ -139,19 +251,24 @@ export function KolosUnit4View({
         </div>
       )}
 
-      {/* ================= UNIT 4 (KOLOS PRIORITY) ================= */}
+      {/* ================= UNIT 4 + KONSTRUKCJE (KOLOS PRIORITY) ================= */}
       {activeUnit === 4 && (
         <>
-          <div className="rounded-2xl border border-[#C2571A]/25 bg-[#FDF2EB] p-5">
+          <div className="rounded-2xl border border-[#C2571A]/25 bg-gradient-to-br from-[#FDF2EB] via-white to-[#ECF7F2]/50 p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#C2571A]">
                   <Flame className="h-3.5 w-3.5" />
-                  Szybka powtórka na kolokwium · Business Partner B1
+                  PEŁNY ZAKRES KOLOKWIUM · DZIAŁ 4 + KONSTRUKCJE ZE SCREENA
                 </div>
-                <h2 className="mt-1 text-xl font-extrabold text-[#18181B]">Unit 4: Business Strategy</h2>
+                <h2 className="mt-1 text-xl font-extrabold text-[#18181B]">
+                  Unit 4 (Business Strategy) + Rzeczownik → Przymiotnik + Konstrukcje
+                </h2>
                 <p className="mt-0.5 text-sm text-[#5C5C66]">
-                  Przerób po kolei 4 zakładki poniżej — to 100% materiału z Unit 4 i Review (str. 107).
+                  1) Tabela <strong className="text-[#18181B]">Rzeczownik → Przymiotnik</strong> (z Twojej listy słówek),
+                  2) <strong className="text-[#18181B]">Czasy, Conditionale, I wish, I should / should have, Until / As soon as / If</strong>,
+                  3) <strong className="text-[#18181B]">Word Building, Kolokacje, PEST, Modale i Due to / Result in</strong> oraz
+                  4) <strong className="text-[#18181B]">157 fiszek z listy</strong>.
                 </p>
               </div>
             </div>
@@ -162,14 +279,14 @@ export function KolosUnit4View({
                   key={t.id}
                   type="button"
                   onClick={() => setSection(t.id)}
-                  className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold transition-all cursor-pointer ${
+                  className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                     section === t.id
                       ? 'bg-[#C2571A] text-white shadow-xs'
                       : 'bg-white text-[#18181B] border border-[#E6E4DD] hover:border-[#C2571A]/40'
                   }`}
                 >
                   <span
-                    className={`rounded px-1.5 py-0.5 font-mono text-[11px] ${
+                    className={`rounded px-1.5 py-0.5 font-mono text-[10px] font-bold ${
                       section === t.id ? 'bg-white/20 text-white' : 'bg-[#F4F3EE] text-[#5C5C66]'
                     }`}
                   >
@@ -181,20 +298,552 @@ export function KolosUnit4View({
             </div>
           </div>
 
-          {section === 'flashcards' && (
-            <VocabView srs={srs} onRate={onRateCard} initialUnit="Moja lista" />
+          {/* ================= TAB 1: RZECZOWNIK -> PRZYMIOTNIK ================= */}
+          {section === 'noun-to-adj' && (
+            <div className="space-y-6">
+              {/* Complete Worksheet 5/15 Endings Table (Noun / Adjectival / Verb Endings) */}
+              <div className="rounded-2xl border border-[#C2571A]/30 bg-white p-5 space-y-5">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#C2571A] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
+                    <Table2 className="h-3 w-3" />
+                    Twoja Karta Pracy (str. 5/15) — poprawiona i uzupełniona
+                  </span>
+                  <h3 className="mt-1.5 text-base font-extrabold text-[#18181B]">
+                    NOUN ENDINGS (10) · ADJECTIVAL ENDINGS (13) · VERB ENDINGS (4)
+                  </h3>
+                  <p className="text-xs text-[#5C5C66]">
+                    Uwaga na poprawki z Twojej odręcznej karty: <strong className="text-[#C2571A]">helpful</strong> (jedno „l”!), <strong className="text-[#C2571A]">impressive</strong> (dwa „s”!), <strong className="text-[#C2571A]">delicious</strong> (przez „c”!) oraz <strong className="text-[#C2571A]">logical</strong> (bo „logic” to rzeczownik!).
+                  </p>
+                </div>
+
+                {WORKSHEET_ENDINGS_CHEATSHEET.map((group) => (
+                  <div key={group.category} className="space-y-2.5">
+                    <h4 className="font-mono text-xs font-extrabold uppercase tracking-wider text-[#0D6B48] border-b border-[#E6E4DD] pb-1">
+                      {group.category}
+                    </h4>
+                    <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+                      {group.items.map((item) => (
+                        <div
+                          key={item.ending}
+                          className="rounded-xl border border-[#E6E4DD] bg-[#F8F7F4] p-3 space-y-1.5"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="rounded bg-[#18181B] px-2 py-0.5 font-mono text-xs font-bold text-white">
+                              {item.ending}
+                            </span>
+                            <span className="text-[11px] font-medium italic text-[#5C5C66]">
+                              {item.meaning}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-1 pt-0.5">
+                            {item.examples.map((ex) => (
+                              <span
+                                key={ex}
+                                className="rounded border border-[#E6E4DD] bg-white px-2 py-0.5 font-mono text-[11px] font-semibold text-[#0D6B48]"
+                              >
+                                {ex}
+                              </span>
+                            ))}
+                          </div>
+                          {item.trap && (
+                            <p className="mt-1 inline-flex items-center gap-1 rounded bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-800 border border-amber-200">
+                              <AlertTriangle className="h-3 w-3 shrink-0" />
+                              {item.trap}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Grammar Rules of Adjective Formation */}
+              <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5 space-y-4">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0D6B48] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
+                    <Sparkles className="h-3 w-3" />
+                    Zasady Gramatyczne i Pisownia
+                  </span>
+                  <h3 className="mt-1.5 text-base font-extrabold text-[#18181B]">
+                    Jak tworzymy przymiotniki od rzeczowników (i czasowników)? — 7 grup końcówek z listy
+                  </h3>
+                  <p className="text-xs text-[#5C5C66]">
+                    Wszystkie przykłady poniżej pochodzą bezpośrednio z Twojej listy słówek (np. mountainous areas, spacious rooms, cloudless skies, luxurious, overpriced, uncomfortable, lively, economic recession, profitable, risky).
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  {NOUN_TO_ADJ_RULES.map((r) => (
+                    <div
+                      key={r.suffix}
+                      className="rounded-xl border border-[#E6E4DD] bg-[#F8F7F4] p-3.5 space-y-1.5"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="rounded-md bg-[#0D6B48] px-2 py-0.5 font-mono text-xs font-bold text-white">
+                          {r.suffix}
+                        </span>
+                        <span className="text-[11px] font-semibold text-[#5C5C66]">{r.meaning}</span>
+                      </div>
+                      <p className="text-xs text-[#18181B] leading-relaxed">{r.spelling}</p>
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {r.examples.map((ex) => (
+                          <span
+                            key={ex}
+                            className="rounded-md border border-[#E6E4DD] bg-white px-2 py-0.5 font-mono text-[11px] font-semibold text-[#0D6B48]"
+                          >
+                            {ex}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Main Noun -> Adjective Table (with Hide & Quiz Write Mode) */}
+              <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-base font-extrabold text-[#18181B]">
+                      Tabela zmian: Rzeczownik / Czasownik → Przymiotnik ({filteredNounToAdj.length} par z listy i Unit 4)
+                    </h3>
+                    <p className="text-xs text-[#5C5C66]">
+                      Możesz filtrować po końcówkach, ukryć przymiotniki do szybkiej powtórki albo włączyć tryb wpisywania (jak na kartkówce!).
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNtaWriteMode(false);
+                        setNtaHideAdj((v) => !v);
+                        setNtaRevealed({});
+                      }}
+                      className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${
+                        ntaHideAdj && !ntaWriteMode
+                          ? 'border-[#0D6B48] bg-[#ECF7F2] text-[#0D6B48]'
+                          : 'border-[#E6E4DD] bg-[#F8F7F4] text-[#18181B] hover:bg-[#F0EFE9]'
+                      }`}
+                    >
+                      {ntaHideAdj ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+                      {ntaHideAdj ? 'Kliknij wiersz, by odkryć' : 'Ukryj przymiotniki'}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNtaWriteMode((v) => !v);
+                        setNtaHideAdj(false);
+                        setNtaInputs({});
+                        setNtaChecked(false);
+                      }}
+                      className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition-colors cursor-pointer ${
+                        ntaWriteMode
+                          ? 'bg-[#C2571A] text-white'
+                          : 'border border-[#C2571A]/35 bg-[#FDF2EB] text-[#C2571A] hover:bg-[#FCE5D7]'
+                      }`}
+                    >
+                      <Table2 className="h-3.5 w-3.5" />
+                      {ntaWriteMode ? 'Wyłącz tryb wpisywania' : 'Sprawdź się: Wpisz przymiotniki w tabeli'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Filter pills by suffix */}
+                <div className="flex flex-wrap gap-1.5 border-t border-[#F0EFE9] pt-3">
+                  {suffixGroups.map((sg) => (
+                    <button
+                      key={sg}
+                      type="button"
+                      onClick={() => {
+                        setSuffixFilter(sg);
+                        setNtaChecked(false);
+                      }}
+                      className={`rounded-lg px-2.5 py-1 font-mono text-xs font-semibold transition-colors cursor-pointer ${
+                        suffixFilter === sg
+                          ? 'bg-[#18181B] text-white'
+                          : 'bg-[#F8F7F4] text-[#5C5C66] hover:bg-[#F0EFE9]'
+                      }`}
+                    >
+                      {sg === 'All' ? `Wszystkie (${NOUN_TO_ADJECTIVE_TABLE.length})` : sg}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-[#E6E4DD] text-xs uppercase tracking-wider text-[#71717A]">
+                        <th className="py-2.5 pr-3 font-semibold">Rzeczownik / Baza (Noun)</th>
+                        <th className="py-2.5 px-3 font-semibold">Przymiotnik (Adjective)</th>
+                        <th className="py-2.5 px-3 font-semibold">Końcówka</th>
+                        <th className="py-2.5 px-3 font-semibold">Kolokacja z listy na kolosa</th>
+                        <th className="py-2.5 pl-3 font-semibold">Zasada / Pułapka</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#F0EFE9]">
+                      {filteredNounToAdj.map((row) => {
+                        const isHidden = ntaHideAdj && !ntaRevealed[row.id];
+                        const userVal = ntaInputs[row.id] ?? '';
+                        const isOk = adjMatches(userVal, row);
+
+                        return (
+                          <tr
+                            key={row.id}
+                            onClick={() =>
+                              ntaHideAdj &&
+                              setNtaRevealed((prev) => ({ ...prev, [row.id]: !prev[row.id] }))
+                            }
+                            className={ntaHideAdj ? 'cursor-pointer hover:bg-[#F8F7F4]' : ''}
+                          >
+                            <td className="py-3 pr-3">
+                              <div className="flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    speakEnglish(`${row.base}, ${row.adjective}, ${row.collocation}`);
+                                  }}
+                                  className="text-[#71717A] hover:text-[#0D6B48] cursor-pointer"
+                                  title="Odsłuchaj wymowę"
+                                >
+                                  <Volume2 className="h-3.5 w-3.5" />
+                                </button>
+                                <span className="font-mono text-[13px] font-bold text-[#18181B]">
+                                  {row.base}
+                                </span>
+                              </div>
+                              <span className="pl-5 text-[11px] text-[#71717A]">{row.basePl}</span>
+                            </td>
+
+                            <td className="py-3 px-3 font-mono text-[13px]">
+                              {ntaWriteMode ? (
+                                <div>
+                                  <input
+                                    type="text"
+                                    value={userVal}
+                                    onChange={(e) =>
+                                      setNtaInputs((prev) => ({ ...prev, [row.id]: e.target.value }))
+                                    }
+                                    placeholder="Wpisz przymiotnik..."
+                                    className={`w-full min-w-[140px] rounded-lg border px-2.5 py-1.5 font-mono text-xs outline-none ${
+                                      ntaChecked
+                                        ? isOk
+                                          ? 'border-[#0D6B48] bg-[#ECF7F2]/60 font-bold text-[#0D6B48]'
+                                          : 'border-red-400 bg-red-50/60 text-red-700'
+                                        : 'border-[#D8D5CC] bg-white focus:border-[#0D6B48]'
+                                    }`}
+                                  />
+                                  {ntaChecked && !isOk && (
+                                    <p className="mt-1 font-mono text-[11px] font-bold text-[#0D6B48]">
+                                      ✓ {row.adjective}
+                                      {row.negativeOrOther ? ` (${row.negativeOrOther})` : ''}
+                                    </p>
+                                  )}
+                                </div>
+                              ) : isHidden ? (
+                                <span className="rounded bg-[#E6E4DD] px-2.5 py-0.5 text-transparent select-none">
+                                  {row.adjective}
+                                </span>
+                              ) : (
+                                <div>
+                                  <span className="font-bold text-[#0D6B48]">{row.adjective}</span>
+                                  {row.negativeOrOther && (
+                                    <span className="block text-[11px] text-[#C2571A]">
+                                      {row.negativeOrOther}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </td>
+
+                            <td className="py-3 px-3">
+                              <span className="rounded-md bg-[#F4F3EE] px-2 py-0.5 font-mono text-[11px] font-semibold text-[#5C5C66]">
+                                {row.suffixGroup}
+                              </span>
+                            </td>
+
+                            <td className="py-3 px-3 text-xs">
+                              {ntaWriteMode || isHidden ? (
+                                <span className="text-[#5C5C66] italic">{row.collocationPl}</span>
+                              ) : (
+                                <>
+                                  <span className="font-semibold text-[#18181B]">
+                                    {row.collocation}
+                                  </span>
+                                  <span className="block text-[11px] text-[#5C5C66]">
+                                    {row.collocationPl}
+                                  </span>
+                                </>
+                              )}
+                            </td>
+
+                            <td className="py-3 pl-3 text-xs">
+                              {row.rule && (
+                                <span className="inline-flex items-center gap-1 rounded bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800 border border-amber-200">
+                                  <AlertTriangle className="h-3 w-3 shrink-0" />
+                                  {row.rule}
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {ntaWriteMode && (
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#F0EFE9] pt-4">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNtaChecked(true);
+                          onScoreSave('u4-noun-to-adj-table', ntaScore.correct, ntaScore.total);
+                        }}
+                        className="inline-flex items-center gap-2 rounded-xl bg-[#0D6B48] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#0A5539] cursor-pointer"
+                      >
+                        <CheckCircle2 className="h-4 w-4" />
+                        Sprawdź wpisane przymiotniki
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNtaInputs({});
+                          setNtaChecked(false);
+                        }}
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-[#E6E4DD] bg-white px-3.5 py-2.5 text-sm font-medium text-[#5C5C66] hover:bg-[#F4F3EE] cursor-pointer"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                        Wyczyść
+                      </button>
+                    </div>
+                    {ntaChecked && (
+                      <span className="rounded-full bg-[#ECF7F2] px-3.5 py-1.5 text-sm font-bold text-[#0D6B48]">
+                        Wynik: {ntaScore.correct} / {ntaScore.total} (
+                        {Math.round((ntaScore.correct / Math.max(1, ntaScore.total)) * 100)}%)
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Gap-fill Exercises for Noun -> Adjective */}
+              <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5">
+                <ExerciseList
+                  title="Ćwiczenie na kolosa: Utwórz przymiotnik od rzeczownika / czasownika (16 zdań z listy)"
+                  subtitle="Wpisz przymiotnik utworzony od słowa WIELKIMI LITERAMI. Zwróć uwagę na pisownię (-ous/-ious, -ful/-less, -y, un-, over-)."
+                  questions={NOUN_TO_ADJ_EXERCISES}
+                  onComplete={(c, t) => onScoreSave('u4-noun-to-adj-drill', c, t)}
+                />
+              </div>
+            </div>
           )}
 
+          {/* ================= TAB 2: KONSTRUKCJE GRAMATYCZNE ZE SCREENA ================= */}
+          {section === 'kolos-constructions' && (
+            <div className="space-y-6">
+              {/* Sub-navigation for the 5 screenshot constructions */}
+              <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#C2571A] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
+                      <BookOpen className="h-3 w-3" />
+                      Konstrukcje z wiadomości o kolosie
+                    </span>
+                    <h3 className="mt-1.5 text-lg font-extrabold text-[#18181B]">
+                      Czasy · Conditionale · I wish · I should (have) · Until / As soon as / If
+                    </h3>
+                    <p className="text-xs text-[#5C5C66]">
+                      Wybierz konkretną konstrukcję, żeby przeczytać tabelę z zasadami i rozwiązać zadania, albo włącz losowy Mix wszystkich konstrukcji na dole.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
+                  {[
+                    {
+                      id: 'all-tenses-mix' as ConstructionTopicId,
+                      badge: '1. Były czasy',
+                      label: 'Wszystkie Czasy (Mix)',
+                      desc: 'Present, Past, Perfect, Future',
+                    },
+                    {
+                      id: 'conditionals-kolos' as ConstructionTopicId,
+                      badge: '2. Conditionale',
+                      label: 'Tryby Warunkowe 0–III',
+                      desc: '0, I, II, III + Mixed & unless',
+                    },
+                    {
+                      id: 'wish-should-have-kolos' as ConstructionTopicId,
+                      badge: '3. I wish + I should',
+                      label: 'I wish & should have + V3',
+                      desc: 'Żal (teraz vs przeszłość) i krytyka',
+                    },
+                    {
+                      id: 'time-clauses-agh' as ConstructionTopicId,
+                      badge: '4. Until, as soon as',
+                      label: 'Time Clauses (bez will!)',
+                      desc: 'until, as soon as, if, unless, by the time',
+                    },
+                    {
+                      id: 'all-mix' as ConstructionTopicId,
+                      badge: 'TEST MIX (15)',
+                      label: 'Losowy Test z Konstrukcji',
+                      desc: 'Wymieszane pytania ze wszystkich 4 grup',
+                    },
+                  ].map((item) => {
+                    const active = activeConstruction === item.id;
+                    const isMix = item.id === 'all-mix';
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          setActiveConstruction(item.id);
+                          if (isMix) setMixSeed((s) => s + 1);
+                        }}
+                        className={`rounded-xl border p-3 text-left transition-all cursor-pointer ${
+                          active
+                            ? isMix
+                              ? 'border-[#C2571A] bg-[#C2571A] text-white shadow-xs'
+                              : 'border-[#0D6B48] bg-[#ECF7F2]/80 text-[#18181B] shadow-xs'
+                            : isMix
+                            ? 'border-[#C2571A]/35 bg-[#FDF2EB] text-[#18181B] hover:bg-[#FCE5D7]'
+                            : 'border-[#E6E4DD] bg-[#F8F7F4] text-[#18181B] hover:bg-[#F0EFE9]'
+                        }`}
+                      >
+                        <span
+                          className={`inline-block rounded px-1.5 py-0.5 font-mono text-[10px] font-bold ${
+                            active && isMix
+                              ? 'bg-white/20 text-white'
+                              : isMix
+                              ? 'bg-[#C2571A] text-white'
+                              : active
+                              ? 'bg-[#0D6B48] text-white'
+                              : 'bg-white text-[#5C5C66]'
+                          }`}
+                        >
+                          {item.badge}
+                        </span>
+                        <p className="mt-1.5 text-xs font-extrabold">{item.label}</p>
+                        <p
+                          className={`mt-0.5 text-[11px] ${
+                            active && isMix ? 'text-white/85' : 'text-[#5C5C66]'
+                          }`}
+                        >
+                          {item.desc}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {activeConstruction !== 'all-mix' && selectedConstructionTopic && (
+                <>
+                  {/* Rules & Formulas */}
+                  <div className="rounded-2xl border border-[#E6E4DD] bg-white p-6 space-y-4">
+                    <div>
+                      <h3 className="text-lg font-extrabold text-[#18181B]">
+                        {selectedConstructionTopic.title}
+                      </h3>
+                      <p className="text-xs text-[#5C5C66]">{selectedConstructionTopic.subtitle}</p>
+                    </div>
+
+                    <div className="space-y-3.5">
+                      {selectedConstructionTopic.rules.map((r) => (
+                        <div
+                          key={r.title}
+                          className="rounded-xl border border-[#E6E4DD] bg-[#F8F7F4] p-4 space-y-2"
+                        >
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <h4 className="font-bold text-[#18181B] text-sm">{r.title}</h4>
+                            <code className="rounded-md bg-white border border-[#E6E4DD] px-2.5 py-1 text-xs font-semibold text-[#0D6B48]">
+                              {r.formula}
+                            </code>
+                          </div>
+                          <p className="text-sm leading-relaxed text-[#5C5C66]">{r.usage}</p>
+                          <ul className="space-y-1 text-sm text-[#18181B] pl-4 list-disc">
+                            {r.examples.map((ex) => (
+                              <li key={ex}>{ex}</li>
+                            ))}
+                          </ul>
+                          {r.watchOut && (
+                            <div className="flex items-start gap-2 rounded-lg bg-amber-50 border border-amber-200 p-2.5 text-xs text-amber-900">
+                              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-amber-700" />
+                              <span>
+                                <strong>Pułapka na kolosie:</strong> {r.watchOut}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Exercises for selected construction */}
+                  <div className="rounded-2xl border border-[#E6E4DD] bg-white p-6">
+                    <ExerciseList
+                      key={selectedConstructionTopic.id}
+                      title={`Ćwiczenia: ${selectedConstructionTopic.title}`}
+                      subtitle="Wpisz poprawną formę lub wybierz odpowiedź. Naciśnij Enter, aby sprawdzić pojedyncze zdanie."
+                      questions={selectedConstructionTopic.exercises}
+                      onComplete={(c, t) =>
+                        onScoreSave(`kolos-${selectedConstructionTopic.id}`, c, t)
+                      }
+                    />
+                  </div>
+                </>
+              )}
+
+              {activeConstruction === 'all-mix' && (
+                <div className="rounded-2xl border border-[#E6E4DD] bg-white p-6 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <h3 className="text-base font-extrabold text-[#18181B]">
+                        Symulator Gramatyczny na Kolosa — 15 losowych zdań ze wszystkich konstrukcji
+                      </h3>
+                      <p className="text-xs text-[#5C5C66]">
+                        Wymieszane zdania: Czasy + Conditionale (0, I, II, III) + I wish / I’d rather + I should / should have + V3 + until / as soon as / unless / if.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setMixSeed((s) => s + 1)}
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-[#C2571A] px-3.5 py-2 text-xs font-bold text-white hover:bg-[#A64813] cursor-pointer"
+                    >
+                      <Shuffle className="h-3.5 w-3.5" />
+                      Wylosuj nowy zestaw (15)
+                    </button>
+                  </div>
+
+                  <ExerciseList
+                    key={`mix-${mixSeed}`}
+                    title="Test Mix: Czasy, Conditionale, I wish, I should (have), Time Clauses"
+                    subtitle="Sprawdź, czy rozpoznajesz właściwą konstrukcję bez podpowiedzi, z którego działu pochodzi zdanie!"
+                    questions={mixedConstructionQuestions}
+                    onComplete={(c, t) => onScoreSave('kolos-constructions-mix', c, t)}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ================= TAB 3: WORD BUILDING UNIT 4 (VERB / NOUN / ADJ) ================= */}
           {section === 'word-building' && (
             <div className="space-y-6">
               <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5">
                 <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <h3 className="text-base font-bold text-[#18181B]">
-                      Tabela Word Building (str. 39, zad. 7) — 13 rodzin wyrazów
+                      Tabela Word Building z podręcznika (str. 39, zad. 7) — 13 rodzin wyrazów (Verb / Noun / Adjective)
                     </h3>
                     <p className="text-xs text-[#5C5C66]">
-                      Zwróć szczególną uwagę na żółte ostrzeżenia (najczęstsze pomyłki na kolokwiach!).
+                      Zwróć szczególną uwagę na żółte ostrzeżenia (np. innovate → innovative, perform → performance, risk → risky, take over vs takeover).
                     </p>
                   </div>
                   <button
@@ -297,11 +946,13 @@ export function KolosUnit4View({
             </div>
           )}
 
-          {section === 'collocations' && (
-            <div className="space-y-5">
+          {/* ================= TAB 4: KOLOKACJE, PEST, MODALE & REPORTING (4.1 - 4.5) ================= */}
+          {section === 'u4-business' && (
+            <div className="space-y-6">
+              {/* 4.1 Collocations */}
               <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5">
                 <h3 className="text-base font-bold text-[#18181B] mb-2">
-                  Bank kolokacji z Unit 4.1 (zapamiętaj pary!)
+                  4.1 Bank kolokacji biznesowych z Unit 4 (zapamiętaj pary!)
                 </h3>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 text-sm">
                   {[
@@ -314,7 +965,7 @@ export function KolosUnit4View({
                     ['tackle / solve a problem', 'rozwiązać problem'],
                     ['miss opportunities', 'przegapić szanse'],
                     ['cut costs', 'ciąć koszty'],
-                    ['take risks', 'podejmować ryzyko'],
+                    ['take risks / take a gamble', 'podejmować ryzyko / zaryzykować'],
                     ['make a profit / money', 'osiągać zysk'],
                     ['come up with a plan', 'wymyślić plan'],
                   ].map(([en, pl]) => (
@@ -337,17 +988,14 @@ export function KolosUnit4View({
                   onComplete={(c, t) => onScoreSave('u4-collocations', c, t)}
                 />
               </div>
-            </div>
-          )}
 
-          {section === 'pest-modals' && (
-            <div className="space-y-6">
+              {/* 4.2 PEST + Modals */}
               <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5">
                 <h3 className="text-base font-bold text-[#18181B] mb-1">
                   4.2 PEST Analysis — ściągawka z podręcznika (str. 40)
                 </h3>
                 <p className="text-xs text-[#5C5C66] mb-4">
-                  Pamiętaj kolejność działań po zebraniu danych: 1. Prioritise the most relevant factors → 2. Identify opportunities & risks → 3. Come up with a strategy.
+                  Kolejność działań po zebraniu danych: 1. Prioritise the most relevant factors → 2. Identify opportunities & risks → 3. Come up with a strategy.
                 </p>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {PEST_CHEATSHEET.map((p) => (
@@ -370,20 +1018,17 @@ export function KolosUnit4View({
 
               <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5">
                 <ExerciseList
-                  title="Review 4.2 — Modal Verbs (must / have to / mustn't / don't have to / should)"
+                  title="Review 4.2 — Modal Verbs (must / have to / mustn't / don't have to / should / will have to)"
                   subtitle="Zadania z Review str. 107 i lekcji 4.2 (str. 41)."
                   questions={modalTopic.exercises}
                   onComplete={(c, t) => onScoreSave('u4-modals', c, t)}
                 />
               </div>
-            </div>
-          )}
 
-          {section === 'reporting' && (
-            <div className="space-y-6">
+              {/* 4.5 Reporting Problems, Reasons & Results + Comparison */}
               <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5">
                 <h3 className="text-base font-bold text-[#18181B] mb-3">
-                  4.5 Reporting Problems, Reasons & Results — złota reguła składniowa
+                  4.5 Reporting Problems, Reasons & Results + Comparison (fewer vs less)
                 </h3>
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   <div className="rounded-xl border border-[#0D6B48]/25 bg-[#ECF7F2]/50 p-4">
@@ -403,20 +1048,20 @@ export function KolosUnit4View({
                   </div>
                   <div className="rounded-xl border border-[#C2571A]/25 bg-[#FDF2EB]/50 p-4">
                     <p className="text-xs font-bold uppercase tracking-wider text-[#C2571A] mb-2">
-                      + PEŁNE ZDANIE lub BEZOKOLICZNIK
+                      + PEŁNE ZDANIE, BEZOKOLICZNIK i PORÓWNANIA
                     </p>
                     <ul className="space-y-1.5 text-sm text-[#18181B]">
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-[#C2571A] shrink-0" />
-                        <span><strong>because</strong> + zdanie (przyczyna)</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-[#C2571A] shrink-0" />
-                        <span><strong>so</strong> / <strong>Therefore,</strong> / <strong>As a result,</strong> + zdanie (skutek)</span>
+                        <span><strong>because</strong> + zdanie  |  <strong>so</strong> / <strong>Therefore,</strong> + zdanie</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-[#C2571A] shrink-0" />
                         <span><strong>in order to</strong> + bezokolicznik (cel)</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-[#C2571A] shrink-0" />
+                        <span><strong>fewer</strong> + policzalne (stores) vs <strong>less</strong> + niepoliczalne (money)</span>
                       </li>
                     </ul>
                   </div>
@@ -425,13 +1070,18 @@ export function KolosUnit4View({
 
               <div className="rounded-2xl border border-[#E6E4DD] bg-white p-5">
                 <ExerciseList
-                  title="Ćwiczenie 4.5 — Wybierz poprawny łącznik"
+                  title="Ćwiczenie 4.5 — Łączniki przyczyny i skutku (due to, result in, in order to) + Porównania"
                   subtitle="Na podstawie tabeli ze str. 46 i Review str. 107."
-                  questions={UNIT4_REVIEW_REPORTING}
+                  questions={[...UNIT4_REVIEW_REPORTING, ...comparisonTopic.exercises]}
                   onComplete={(c, t) => onScoreSave('u4-reporting', c, t)}
                 />
               </div>
             </div>
+          )}
+
+          {/* ================= TAB 5: FISZKI Z LISTY ================= */}
+          {section === 'flashcards' && (
+            <VocabView srs={srs} onRate={onRateCard} initialUnit="Moja lista" />
           )}
         </>
       )}

@@ -5,6 +5,7 @@ import {
   FileText,
   Flame,
   GraduationCap,
+  Languages,
   LayoutDashboard,
   Layers,
   MessageSquare,
@@ -29,10 +30,11 @@ import { GrammarView } from './components/GrammarView';
 import { FunctionalView } from './components/FunctionalView';
 import { WritingView } from './components/WritingView';
 import { ExamsView } from './components/ExamsView';
+import { GlobalWordTooltip } from './components/GlobalWordTooltip';
 
 const NAV_ITEMS: { id: NavTab; label: string; icon: typeof LayoutDashboard; highlight?: boolean }[] = [
   { id: 'dashboard', label: 'Start', icon: LayoutDashboard },
-  { id: 'kolos', label: 'Units 1–5 (Kolos U4)', icon: Flame, highlight: true },
+  { id: 'kolos', label: 'Kolos U4 (1–5)', icon: Flame, highlight: true },
   { id: 'vocab', label: 'Fiszki SRS', icon: Layers },
   { id: 'wordformation', label: 'Słowotwórstwo', icon: Sparkles },
   { id: 'grammar', label: 'Gramatyka', icon: BookOpen },
@@ -45,6 +47,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
   const [selectedUnit, setSelectedUnit] = useState<1 | 2 | 3 | 4 | 5>(4);
   const [vocabInitialCat, setVocabInitialCat] = useState<'All' | VocabCategory>('All');
+  const [hoverTranslate, setHoverTranslate] = useState(true);
   const [srs, setSrs] = useState(() => loadSRS());
   const [scores, setScores] = useState(() => loadScores());
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -94,21 +97,21 @@ export default function App() {
     <div className="min-h-screen bg-[#F8F7F4] text-[#18181B]">
       {/* Top Header */}
       <header className="sticky top-0 z-30 border-b border-[#E6E4DD] bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
           <button
             type="button"
             onClick={() => setActiveTab('dashboard')}
-            className="flex items-center gap-2.5 text-left cursor-pointer"
+            className="flex shrink-0 items-center gap-2.5 text-left cursor-pointer"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0D6B48] text-white shadow-2xs">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0D6B48] text-white shadow-2xs">
               <GraduationCap className="h-5 w-5" />
             </div>
-            <div>
+            <div className="whitespace-nowrap">
               <span className="block text-sm font-extrabold tracking-tight text-[#18181B]">
                 AGH English B2
               </span>
               <span className="block text-[11px] font-medium text-[#71717A]">
-                Business Partner B1 (Units 1–5) · Informatyka
+                Business Partner B1 · Units 1–5
               </span>
             </div>
           </button>
@@ -126,7 +129,7 @@ export default function App() {
                     if (item.id === 'vocab') setVocabInitialCat('All');
                     setActiveTab(item.id);
                   }}
-                  className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all cursor-pointer ${
+                  className={`inline-flex shrink-0 whitespace-nowrap items-center gap-1.5 rounded-xl px-2.5 py-2 text-xs font-bold transition-all cursor-pointer ${
                     active
                       ? item.highlight
                         ? 'bg-[#C2571A] text-white shadow-2xs'
@@ -136,23 +139,37 @@ export default function App() {
                       : 'text-[#5C5C66] hover:bg-[#F4F3EE] hover:text-[#18181B]'
                   }`}
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-3.5 w-3.5 shrink-0" />
                   {item.label}
                 </button>
               );
             })}
           </nav>
 
-          {/* Backup Controls */}
-          <div className="flex items-center gap-1.5">
+          {/* Hover Translator & Backup Controls */}
+          <div className="flex shrink-0 items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setHoverTranslate((v) => !v)}
+              className={`inline-flex whitespace-nowrap items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                hoverTranslate
+                  ? 'border-[#0D6B48]/40 bg-[#ECF7F2] text-[#0D6B48]'
+                  : 'border-[#E6E4DD] bg-[#F8F7F4] text-[#71717A] hover:bg-[#F0EFE9]'
+              }`}
+              title="Najedź kursorem na dowolne angielskie słowo w aplikacji, aby zobaczyć tłumaczenie"
+            >
+              <Languages className="h-3.5 w-3.5 shrink-0" />
+              <span className="hidden sm:inline">
+                Tłumacz: {hoverTranslate ? 'WŁ' : 'WYŁ'}
+              </span>
+            </button>
             <button
               type="button"
               onClick={handleExport}
-              className="inline-flex items-center gap-1 rounded-lg border border-[#E6E4DD] bg-[#F8F7F4] px-2.5 py-1.5 text-xs font-medium text-[#5C5C66] hover:bg-[#F0EFE9] cursor-pointer"
+              className="inline-flex items-center gap-1 rounded-lg border border-[#E6E4DD] bg-[#F8F7F4] px-2 py-1.5 text-xs font-medium text-[#5C5C66] hover:bg-[#F0EFE9] cursor-pointer"
               title="Eksportuj postęp (JSON)"
             >
               <Download className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Backup</span>
             </button>
             <button
               type="button"
@@ -235,6 +252,8 @@ export default function App() {
         {activeTab === 'writing' && <WritingView />}
         {activeTab === 'exams' && <ExamsView onScoreSave={handleSaveScore} />}
       </main>
+
+      <GlobalWordTooltip enabled={hoverTranslate} />
     </div>
   );
 }
