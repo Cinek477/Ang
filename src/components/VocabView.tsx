@@ -13,6 +13,7 @@ interface VocabViewProps {
 
 const UNIT_FILTERS: ('All' | UnitTag)[] = [
   'All',
+  'Moja lista',
   'Unit 1',
   'Unit 2',
   'Unit 3',
@@ -23,6 +24,7 @@ const UNIT_FILTERS: ('All' | UnitTag)[] = [
 
 const CATEGORIES: ('All' | VocabCategory)[] = [
   'All',
+  'Moja lista',
   'Trudne z tekstów',
   'Collocations',
   'Word Building',

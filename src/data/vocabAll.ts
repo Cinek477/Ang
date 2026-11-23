@@ -1,4 +1,5 @@
 import type { Flashcard } from './types';
+import { CUSTOM_LIST_FLASHCARDS } from './customList';
 import { VIDEO_AND_WORKSHOP_FLASHCARDS } from './videoVocab';
 
 const CORE_FLASHCARDS: Flashcard[] = [
@@ -651,6 +652,7 @@ const CORE_FLASHCARDS: Flashcard[] = [
 ];
 
 export const ALL_FLASHCARDS: Flashcard[] = [
+  ...CUSTOM_LIST_FLASHCARDS,
   ...CORE_FLASHCARDS,
   ...VIDEO_AND_WORKSHOP_FLASHCARDS,
 ];

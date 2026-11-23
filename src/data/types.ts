@@ -8,9 +8,10 @@ export type NavTab =
   | 'writing'
   | 'exams';
 
-export type UnitTag = 'Unit 1' | 'Unit 2' | 'Unit 3' | 'Unit 4' | 'Unit 5' | 'AGH Teksty';
+export type UnitTag = 'Moja lista' | 'Unit 1' | 'Unit 2' | 'Unit 3' | 'Unit 4' | 'Unit 5' | 'AGH Teksty';
 
 export type VocabCategory =
+  | 'Moja lista'
   | 'Trudne z tekstów'
   | 'Collocations'
   | 'Word Building'

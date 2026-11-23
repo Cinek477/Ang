@@ -9,19 +9,29 @@ import {
 } from '../data/unit4';
 import { OTHER_UNITS_REVIEWS } from '../data/unitsReview';
 import { GRAMMAR_TOPICS } from '../data/grammar';
+import { CUSTOM_LIST_FLASHCARDS } from '../data/customList';
+import type { SRSRecord } from '../data/types';
 import { speakEnglish } from '../utils/storage';
 import { ExerciseList } from './ExerciseList';
+import { VocabView } from './VocabView';
 
 interface KolosUnit4ViewProps {
   onScoreSave: (setId: string, correct: number, total: number) => void;
+  srs: Record<string, SRSRecord>;
+  onRateCard: (cardId: string, rating: 'again' | 'hard' | 'good') => void;
   initialUnit?: 1 | 2 | 3 | 4 | 5;
 }
 
-type KolosSection = 'word-building' | 'collocations' | 'pest-modals' | 'reporting';
+type KolosSection = 'flashcards' | 'word-building' | 'collocations' | 'pest-modals' | 'reporting';
 
-export function KolosUnit4View({ onScoreSave, initialUnit = 4 }: KolosUnit4ViewProps) {
+export function KolosUnit4View({
+  onScoreSave,
+  srs,
+  onRateCard,
+  initialUnit = 4,
+}: KolosUnit4ViewProps) {
   const [activeUnit, setActiveUnit] = useState<1 | 2 | 3 | 4 | 5>(initialUnit);
-  const [section, setSection] = useState<KolosSection>('word-building');
+  const [section, setSection] = useState<KolosSection>('flashcards');
   const [quizMode, setQuizMode] = useState(false);
   const [revealedRows, setRevealedRows] = useState<Record<string, boolean>>({});
 
@@ -40,6 +50,7 @@ export function KolosUnit4View({ onScoreSave, initialUnit = 4 }: KolosUnit4ViewP
   ];
 
   const u4Tabs: { id: KolosSection; label: string; tag: string }[] = [
+    { id: 'flashcards', label: `Fiszki z listy (${CUSTOM_LIST_FLASHCARDS.length})`, tag: 'SRS' },
     { id: 'word-building', label: 'Word Building (str. 39 & 107)', tag: '4.1' },
     { id: 'collocations', label: 'Kolokacje biznesowe', tag: '4.1' },
     { id: 'pest-modals', label: 'PEST + Modal Verbs', tag: '4.2' },
@@ -169,6 +180,10 @@ export function KolosUnit4View({ onScoreSave, initialUnit = 4 }: KolosUnit4ViewP
               ))}
             </div>
           </div>
+
+          {section === 'flashcards' && (
+            <VocabView srs={srs} onRate={onRateCard} initialUnit="Moja lista" />
+          )}
 
           {section === 'word-building' && (
             <div className="space-y-6">

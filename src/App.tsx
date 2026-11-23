@@ -215,7 +215,12 @@ export default function App() {
           />
         )}
         {activeTab === 'kolos' && (
-          <KolosUnit4View onScoreSave={handleSaveScore} initialUnit={selectedUnit} />
+          <KolosUnit4View
+            onScoreSave={handleSaveScore}
+            srs={srs}
+            onRateCard={handleRateCard}
+            initialUnit={selectedUnit}
+          />
         )}
         {activeTab === 'vocab' && (
           <VocabView
