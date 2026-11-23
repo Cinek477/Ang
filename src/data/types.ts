@@ -84,10 +84,18 @@ export interface GrammarRule {
   watchOut?: string;
 }
 
+export interface GrammarBlock {
+  label?: string;
+  form: string;
+  sample: string;
+  tone?: 'condition' | 'result';
+}
+
 export interface GrammarTableRow {
   situation: string;
   keywords?: string[];
   formula: string;
+  blocks?: GrammarBlock[];
   exampleEn: string;
   examplePl: string;
 }
@@ -98,12 +106,20 @@ export interface GrammarTrapPair {
   why: string;
 }
 
+export interface SimpleTableSection {
+  title?: string;
+  headers: string[];
+  rows: string[][];
+}
+
 export interface GrammarTopic {
   id: string;
   unitTag: string;
   isKolosPriority?: boolean;
   title: string;
   subtitle: string;
+  keyBullets?: string[];
+  simpleTables?: SimpleTableSection[];
   quickSteps?: string[];
   tableHeaders?: [string, string, string];
   tableRows?: GrammarTableRow[];
