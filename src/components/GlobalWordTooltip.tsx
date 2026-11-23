@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Volume2 } from 'lucide-react';
 import { lookupWordWithContext, type DictionaryHit } from '../utils/dictionary';
 import { speakEnglish } from '../utils/storage';
@@ -90,6 +90,7 @@ function getCaretNodeAndOffset(x: number, y: number): { node: Text; offset: numb
 
 export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
+  const [pos, setPos] = useState<{ left: number; top: number }>({ left: 16, top: 16 });
   const tooltipElRef = useRef<HTMLDivElement>(null);
   const hideTimerRef = useRef<number | null>(null);
   const fetchTimerRef = useRef<number | null>(null);
@@ -227,7 +228,7 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
         return;
       }
 
-      // 2. Fallback for any other English word (if text node doesn't look like Polish prose)
+      // 2. Fallback for any other English word
       const lowerWord = currentToken.word.toLowerCase();
       if (
         lowerWord.length >= 3 &&
@@ -286,14 +287,36 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
     };
   }, [enabled]);
 
+  // Measure actual rendered tooltip box and clamp strictly inside the visible viewport
+  useLayoutEffect(() => {
+    if (!tooltip || !tooltipElRef.current) return;
+    const el = tooltipElRef.current;
+    const tw = el.offsetWidth;
+    const th = el.offsetHeight;
+    const vw = document.documentElement.clientWidth || window.innerWidth;
+    const vh = document.documentElement.clientHeight || window.innerHeight;
+    const margin = 12;
+
+    // Center horizontally over the word, then clamp to [margin, vw - tw - margin]
+    let nextLeft = tooltip.rect.left + tooltip.rect.width / 2 - tw / 2;
+    const maxLeft = Math.max(margin, vw - tw - margin);
+    nextLeft = Math.min(maxLeft, Math.max(margin, nextLeft));
+
+    // Prefer placing above the word; if there isn't enough room above, place below
+    let nextTop = tooltip.rect.top - th - 8;
+    if (nextTop < margin) {
+      nextTop = tooltip.rect.bottom + 8;
+    }
+    // If placing below would go past bottom edge, clamp to bottom margin
+    const maxTop = Math.max(margin, vh - th - margin);
+    nextTop = Math.min(maxTop, Math.max(margin, nextTop));
+
+    setPos({ left: Math.round(nextLeft), top: Math.round(nextTop) });
+  }, [tooltip]);
+
   if (!enabled || !tooltip) return null;
 
   const { hit, rect } = tooltip;
-  const placeBelow = rect.top < 85;
-  const centerX = Math.min(
-    window.innerWidth - 150,
-    Math.max(150, rect.left + rect.width / 2)
-  );
 
   return (
     <>
@@ -308,19 +331,18 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
         }}
       />
 
-      {/* Floating translation card */}
+      {/* Floating translation card clamped strictly to viewport */}
       <div
         ref={tooltipElRef}
         data-word-tooltip="true"
-        className="fixed z-50 w-max max-w-xs -translate-x-1/2 rounded-xl border border-[#27272A] bg-[#18181B] px-3.5 py-2.5 text-white shadow-xl transition-opacity"
+        className="fixed z-50 w-max max-w-[min(320px,calc(100vw-24px))] rounded-xl border border-[#27272A] bg-[#18181B] px-3.5 py-2.5 text-white shadow-xl"
         style={{
-          left: centerX,
-          top: placeBelow ? rect.bottom + 8 : rect.top - 8,
-          transform: placeBelow ? 'translate(-50%, 0)' : 'translate(-50%, -100%)',
+          left: pos.left,
+          top: pos.top,
         }}
       >
         <div className="flex items-center justify-between gap-3">
-          <span className="font-mono text-xs font-bold text-[#A1A1AA]">
+          <span className="font-mono text-xs font-bold text-[#A1A1AA] break-words">
             {hit.en}
           </span>
           <button
@@ -329,17 +351,17 @@ export function GlobalWordTooltip({ enabled }: GlobalWordTooltipProps) {
               e.stopPropagation();
               speakEnglish(hit.en);
             }}
-            className="inline-flex items-center gap-1 rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-white hover:bg-white/20 cursor-pointer"
+            className="inline-flex shrink-0 items-center gap-1 rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-white hover:bg-white/20 cursor-pointer"
             title="Odsłuchaj wymowę"
           >
             <Volume2 className="h-3 w-3" />
           </button>
         </div>
-        <p className="mt-1 text-sm font-extrabold text-[#34D399] leading-snug">
+        <p className="mt-1 text-sm font-extrabold text-[#34D399] leading-snug break-words">
           {hit.pl}
         </p>
         {hit.note && (
-          <p className="mt-1 border-t border-white/10 pt-1 text-[11px] text-amber-300 leading-tight">
+          <p className="mt-1 border-t border-white/10 pt-1 text-[11px] text-amber-300 leading-tight break-words">
             {hit.note}
           </p>
         )}
